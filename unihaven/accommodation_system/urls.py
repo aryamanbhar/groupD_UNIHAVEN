@@ -19,4 +19,7 @@ urlpatterns = [
     
     # Notification endpoints
     path('notifications/', views.notification_list),
+
+    # All endpoints
+    path('viewAll', views.view_all),
 ]
