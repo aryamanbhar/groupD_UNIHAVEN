@@ -12,6 +12,7 @@ class CedarsSpecialist(models.Model):
     department = models.CharField(max_length=255)
     
 class Accommodation(models.Model):
+    property_id = models.CharField(max_length=255, unique=True)
     name = models.CharField(max_length=255)
     image = models.ImageField(upload_to='accommodation_images/', null=True, blank=True)
     type = models.CharField(max_length=100)
