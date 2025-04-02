@@ -9,7 +9,7 @@
         <h1>Showing all accommodations</h1>
         <p>Number of accommodations: {{ accommodations | length }} </p>
         <ul>{# TODO: Loop through all accommodations #}
-            #
+            <!--
             'id': acc.id,
             'name': acc.name,
             'price': str(acc.price),
@@ -17,7 +17,7 @@
             'longitude': acc.longitude,
             'availability': acc.availability,
             'status': acc.status
-            #
+            -->
             {% for accommodation in accommodations %}
             <li>id: {{accommodation.acc.id}}</li>
             <li>name: {{accommodation.acc.name}}</li>
@@ -31,12 +31,12 @@
         <h1>Showing all students</h1>
         <p>Number of students: {{ students | length }} </p>
         <ul>{# TODO: Loop through all students #}
-            #
+            <!--
             'id': stu.id,
             'name': stu.name,
             'email': stu.email,
             'degree_type': stu.degree_type
-            #
+            -->
             {% for student in students %}
             <li>id: {{student.stu.id}}</li>
             <li>name: {{student.stu.name}}</li>
@@ -47,12 +47,12 @@
         <h1>Showing all reservations</h1>
         <p>Number of reservations: {{ reservations | length }} </p>
         <ul>{# TODO: Loop through all reservations #}
-            #
+            <!--
             'id': res.id,
             'accommodation_id': res.accommodation.id,
             'accommodation_name': res.accommodation.name,
             'status': res.status
-            #
+            -->
             {% for reservation in reservations %}
             <li>id: {{reservation.res.id}}</li>
             <li>accommodation_id: {{reservation.res.accommodation.id}}</li>
@@ -63,12 +63,12 @@
         <h1>Showing all ratings</h1>
         <p>Number of ratings: {{ ratings | length }} </p>
         <ul>{# TODO: Loop through all ratings #}
-            #
+            <!--
             'id': rat.id,
             'student_id': rat.student.id,
             'student_name': rat.student.name,
             'score': rat.score
-            #
+            -->
             {% for rating in ratings %}
             <li>id: {{rating.rat.id}}</li>
             <li>student_id: {{rating.rat.student.id}}</li>
@@ -79,10 +79,10 @@
         <h1>Showing all CEDARS specialists</h1>
         <p>Number of CEDARS specialists: {{ specialists | length }} </p>
         <ul>{# TODO: Loop through all CEDARS specialists #}
-            #
+            <!--
             'id': spec.id,
             'department': spec.department
-            #
+            -->
             {% for specialist in specialists %}
             <li>id: {{specialist.spec.id}}</li>
             <li>department: {{specialist.spec.department}}</li>
@@ -91,11 +91,11 @@
         <h1>Showing all notifications</h1>
         <p>Number of notifications: {{ notifications | length }} </p>
         <ul>{# TODO: Loop through all notifications #}
-            #
+            <!--
             'id': notif.id,
             'detail': notif.detail,
             'is_read': notif.is_read
-            #
+            -->
             {% for notification in notifications %}
             <li>id: {{notification.notif.id}}</li>
             <li>detail: {{notification.notif.detail}}</li>
