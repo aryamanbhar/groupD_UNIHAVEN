@@ -9,7 +9,7 @@ This project is part of the GroupD_UNIHAVEN repository. It aims to provide a com
 **Status:** Implemented
 
 **Limitations:**
-- Currently, the search functionality supports basic criteria such as location, price range, and accommodation type. However, some filters are not decided by the users but by the system.
+- Currently, the search functionality supports basic criteria such as location, price range, and accommodation type. However, filters are not decided by the users but by the system.
 
 ### PBI FE-2: View comprehensive details of each accommodation
 **Status:** Partially Implemented
