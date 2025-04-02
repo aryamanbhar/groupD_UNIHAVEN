@@ -8,6 +8,9 @@ class User(models.Model):
     phone = models.CharField(max_length=20, null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
+class CedarsSpecialist(models.Model):
+    department = models.CharField(max_length=255)
+    
 class Accommodation(models.Model):
     name = models.CharField(max_length=255)
     image = models.ImageField(upload_to='accommodation_images/', null=True, blank=True)
@@ -90,9 +93,6 @@ class Rating(models.Model):
     student = models.ForeignKey(Student, on_delete=models.CASCADE)
     accommodation = models.ForeignKey(Accommodation, on_delete=models.CASCADE)  # Establishing Accommodation → Rating relationship
     score = models.IntegerField()
-
-class CedarsSpecialist(models.Model):
-    department = models.CharField(max_length=255)
 
 class Notification(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
