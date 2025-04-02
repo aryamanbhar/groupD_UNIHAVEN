@@ -1,4 +1,5 @@
 from django.http import HttpResponse, JsonResponse
+from django.views.generic import TemplateView
 from django.shortcuts import render
 from .models import Accommodation, Reservation, Student, Rating, CedarsSpecialist, Notification
 
