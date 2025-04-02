@@ -1,4 +1,5 @@
-from django.http import JsonResponse
+from django.http import HttpResponse, JsonResponse
+from django.shortcuts import render
 from .models import Accommodation, Reservation, Student, Rating, CedarsSpecialist, Notification
 
 # Accommodation Views
@@ -18,7 +19,7 @@ def accommodation_list(request):
             
             # Add accommodation data with distance sentences
             data.append({
-                'id': acc.id,
+                'id': acc.property_id,
                 'name': acc.name,
                 'price': str(acc.price),
                 'latitude': acc.latitude,
@@ -85,3 +86,75 @@ def notification_list(request):
             'is_read': notif.is_read
         } for notif in notifications]
         return JsonResponse({'notifications': data})
+
+def view_all(request):
+    context = {
+        "accommodations": Accommodation.objects.all()
+        "students": Student.objects.all()
+        "reservations": Reservation.objects.all()
+        "ratings": Rating.objects.all()
+        "specialists": CedarsSpecialist.objects.all()
+        "notifications": Notification.objects.all()
+    }
+    return render(request, 'view_all.html', context=context)
+
+#filters
+from django.db.models import Q
+from .models import Accommodation
+
+def filter_accommodations(filters):
+    """
+    Filters accommodations based on the provided criteria with the following logic:
+    - availability_start <= desired_start AND availability_end >= desired_end
+    - number_of_beds >= desired_beds
+    - number_of_bedrooms >= desired_bedrooms
+    - price >= desired_price_min AND price <= desired_price_max
+    - distance <= desired_distance_max
+    
+    :param filters: A dictionary containing filter criteria.
+    :return: A QuerySet of filtered accommodations.
+    """
+    queryset = Accommodation.objects.all()
+
+    if 'type' in filters:
+        queryset = queryset.filter(type=filters['type'])
+
+    if 'availability_start' in filters and 'availability_end' in filters:
+        queryset = queryset.filter(
+            availability_start__lte=filters['availability_start'],  
+            availability_end__gte=filters['availability_end']       
+        )
+    elif 'availability_start' in filters:
+        queryset = queryset.filter(
+            availability_start__lte=filters['availability_start']
+        )
+    elif 'availability_end' in filters:
+        queryset = queryset.filter(
+            availability_end__gte=filters['availability_end']
+        )
+
+    if 'number_of_beds' in filters:
+        queryset = queryset.filter(
+            number_of_beds__gte=filters['number_of_beds']
+        )
+
+    if 'number_of_bedrooms' in filters:
+        queryset = queryset.filter(
+            number_of_bedrooms__gte=filters['number_of_bedrooms']
+        )
+
+    price_filters = Q()
+    if 'price_min' in filters:
+        price_filters &= Q(price__gte=filters['price_min'])
+    if 'price_max' in filters:
+        price_filters &= Q(price__lte=filters['price_max'])
+    if price_filters:
+        queryset = queryset.filter(price_filters)
+
+
+    if 'distance_max' in filters:
+        queryset = queryset.filter(
+            distance_to_campus__lte=filters['distance_max']
+        )
+
+    return queryset

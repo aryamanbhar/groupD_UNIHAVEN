@@ -1,0 +1,107 @@
+<!doctype html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>View all lists</title>
+    </head>
+    <body>
+        <h1>Showing all accommodations</h1>
+        <p>Number of accommodations: {{ accommodations | length }} </p>
+        <ul>{# TODO: Loop through all accommodations #}
+            <!--
+            'id': acc.id,
+            'name': acc.name,
+            'price': str(acc.price),
+            'latitude': acc.latitude,
+            'longitude': acc.longitude,
+            'availability': acc.availability,
+            'status': acc.status
+            -->
+            {% for accommodation in accommodations %}
+            <li>id: {{accommodation.acc.id}}</li>
+            <li>name: {{accommodation.acc.name}}</li>
+            <li>price: {{accommodation.acc.str(acc.price)}}</li>
+            <li>latitude: {{accommodation.acc.latitude}}</li>
+            <li>longitude: {{accommodation.acc.longitude}}</li>
+            <li>distance: {{accommodation.acc.distance}}</li>
+            <li>availability: {{accommodation.acc.availability}}</li>
+            <li>status: {{accommodation.acc.status}}</li>
+        </ul>
+
+        <h1>Showing all students</h1>
+        <p>Number of students: {{ students | length }} </p>
+        <ul>{# TODO: Loop through all students #}
+            <!--
+            'id': stu.id,
+            'name': stu.name,
+            'email': stu.email,
+            'degree_type': stu.degree_type
+            -->
+            {% for student in students %}
+            <li>id: {{student.stu.id}}</li>
+            <li>name: {{student.stu.name}}</li>
+            <li>email: {{student.stu.email}}</li>
+            <li>degree_type: {{student.stu.degree_type}}</li>
+        </ul>
+
+        <h1>Showing all reservations</h1>
+        <p>Number of reservations: {{ reservations | length }} </p>
+        <ul>{# TODO: Loop through all reservations #}
+            <!--
+            'id': res.id,
+            'accommodation_id': res.accommodation.id,
+            'accommodation_name': res.accommodation.name,
+            'status': res.status
+            -->
+            {% for reservation in reservations %}
+            <li>id: {{reservation.res.id}}</li>
+            <li>accommodation_id: {{reservation.res.accommodation.id}}</li>
+            <li>accommodation_name: {{reservation.res.accommodation.name}}</li>
+            <li>status: {{reservation.res.status}}</li>
+        </ul>
+
+        <h1>Showing all ratings</h1>
+        <p>Number of ratings: {{ ratings | length }} </p>
+        <ul>{# TODO: Loop through all ratings #}
+            <!--
+            'id': rat.id,
+            'student_id': rat.student.id,
+            'student_name': rat.student.name,
+            'score': rat.score
+            -->
+            {% for rating in ratings %}
+            <li>id: {{rating.rat.id}}</li>
+            <li>student_id: {{rating.rat.student.id}}</li>
+            <li>student_name: {{rating.rat.student.name}}</li>
+            <li>score: {{rating.rat.score}}</li>
+        </ul>
+
+        <h1>Showing all CEDARS specialists</h1>
+        <p>Number of CEDARS specialists: {{ specialists | length }} </p>
+        <ul>{# TODO: Loop through all CEDARS specialists #}
+            <!--
+            'id': spec.id,
+            'department': spec.department
+            -->
+            {% for specialist in specialists %}
+            <li>id: {{specialist.spec.id}}</li>
+            <li>department: {{specialist.spec.department}}</li>
+        </ul>
+
+        <h1>Showing all notifications</h1>
+        <p>Number of notifications: {{ notifications | length }} </p>
+        <ul>{# TODO: Loop through all notifications #}
+            <!--
+            'id': notif.id,
+            'detail': notif.detail,
+            'is_read': notif.is_read
+            -->
+            {% for notification in notifications %}
+            <li>id: {{notification.notif.id}}</li>
+            <li>detail: {{notification.notif.detail}}</li>
+            <li>is_read: {{notification.notif.is_read}}</li>
+        </ul>
+
+    </body>
+</html>
