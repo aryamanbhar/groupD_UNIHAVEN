@@ -5,15 +5,28 @@ from .models import Accommodation, Reservation, Student, Rating, CedarsSpecialis
 def accommodation_list(request):
     if request.method == 'GET':
         accommodations = Accommodation.objects.all()
-        data = [{
-            'id': acc.id,
-            'name': acc.name,
-            'price': str(acc.price),
-            'latitude': acc.latitude,
-            'longitude': acc.longitude,
-            'availability': acc.availability,
-            'status': acc.status
-        } for acc in accommodations]
+        data = []
+        for acc in accommodations:
+            # Get distances to all campuses
+            distances = acc.distances()
+            
+            # Create descriptive sentences for each campus
+            distance_sentences = [
+                f"The distance to {campus} is {distance:.2f} km."
+                for campus, distance in distances.items()
+            ]
+            
+            # Add accommodation data with distance sentences
+            data.append({
+                'id': acc.id,
+                'name': acc.name,
+                'price': str(acc.price),
+                'latitude': acc.latitude,
+                'longitude': acc.longitude,
+                'availability': acc.availability,
+                'status': acc.status,
+                'distances': distance_sentences,  # List of sentences
+            })
         return JsonResponse({'accommodations': data})
 
 # Student Views
