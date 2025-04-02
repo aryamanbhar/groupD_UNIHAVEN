@@ -1,4 +1,5 @@
-from django.http import JsonResponse
+from django.http import HttpResponse, JsonResponse
+from django.shortcuts import render
 from .models import Accommodation, Reservation, Student, Rating, CedarsSpecialist, Notification
 
 # Accommodation Views
@@ -72,3 +73,14 @@ def notification_list(request):
             'is_read': notif.is_read
         } for notif in notifications]
         return JsonResponse({'notifications': data})
+
+def view_all(request):
+    context = {
+        "accommodations": Accommodation.objects.all()
+        "students": Student.objects.all()
+        "reservations": Reservation.objects.all()
+        "ratings": Rating.objects.all()
+        "specialists": CedarsSpecialist.objects.all()
+        "notifications": Notification.objects.all()
+    }
+    return render(request, 'view_all.html', context=context)
