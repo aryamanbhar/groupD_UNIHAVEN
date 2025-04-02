@@ -1,4 +1,4 @@
-from rest_framework import generics
+from rest_framework import generics, filters
 from .models import (
     User, CedarsSpecialist, Accommodation, Student, Reservation,
     Contract, Rating, Notification
@@ -39,3 +39,30 @@ class RatingListCreateView(generics.ListCreateAPIView):
 class RatingRetrieveUpdateDeleteView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Rating.objects.all()
     serializer_class = RatingSerializer
+
+class AccommodationListView(generics.ListAPIView):
+    queryset = Accommodation.objects.all()
+    serializer_class = AccommodationSerializer
+    filter_backends = [DjangoFilterBackend, filters.OrderingFilter, filters.SearchFilter]
+    filterset_fields = ["type", "status", "price", "number_of_beds"]
+    ordering_fields = ["price", "distance"]
+    search_fields = ["name", "owner_info"]
+
+class StudentListView(generics.ListAPIView):
+    queryset = Student.objects.all()
+    serializer_class = StudentSerializer
+    filter_backends = [DjangoFilterBackend, filters.SearchFilter]
+    filterset_fields = ["degree_type"]
+    search_fields = ["name"]
+
+class ReservationListView(generics.ListAPIView):
+    queryset = Reservation.objects.all()
+    serializer_class = ReservationSerializer
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ["status", "student"]
+
+class RatingListView(generics.ListAPIView):
+    queryset = Rating.objects.all()
+    serializer_class = RatingSerializer
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ["score", "student", "accommodation"]
