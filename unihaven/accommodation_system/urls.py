@@ -3,7 +3,9 @@ from . import views
 
 urlpatterns = [
     # Accommodation endpoints
-    path('accommodations/', views.accommodation_list),
+    # path('accommodations/', views.accommodation_list),
+
+    path('accommodations/', views.accommodation_list, name='accommodation-list'),
     
     # Student endpoints
     path('students/', views.student_list),
@@ -19,4 +21,5 @@ urlpatterns = [
     
     # Notification endpoints
     path('notifications/', views.notification_list),
+
 ]
