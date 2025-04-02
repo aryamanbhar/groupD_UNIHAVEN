@@ -15,7 +15,7 @@ This project is part of the GroupD_UNIHAVEN repository. It aims to provide a com
 **Status:** Partially Implemented
 
 **Limitations:**
-- The details view includes basic information such as name, location and price. However, additional details such as images of the accommodation are currently missing.
+- The interface for displaying comprehensive details might lack advanced formatting and visual appeal.
 
 ### PBI FE-3: Select and reserve accommodation directly through the platform
 **Status:** Not Implemented
@@ -45,7 +45,7 @@ This project is part of the GroupD_UNIHAVEN repository. It aims to provide a com
 
 ## Planned Enhancements
 - Implementation of user-defined advanced search criteria.
-- Addition of comprehensive accommodation details including images.
+- Implementation of a better interface for displaying comprehensive details.
 - Implementation of the core functionality for selecting and reserving accommodations directly through the platform.
 - Completion of the add and upload function for accommodation details.
 - Implementation of a cancellation function for reservations.
