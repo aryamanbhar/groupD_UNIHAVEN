@@ -24,6 +24,8 @@ class Accommodation(models.Model):
     availability_end = models.DateField()
     create_date = models.DateTimeField(auto_now_add=True)
     status = models.CharField(max_length=50)
+    cedars_specialist = models.ForeignKey(CedarsSpecialist, on_delete=models.SET_NULL, null=True, blank=True)  # Linking Accommodation to Cedars Specialist
+
 
     def save(self, *args, **kwargs):
         # Automatically fetch latitude and longitude if not provided
@@ -86,6 +88,7 @@ class Contract(models.Model):
 
 class Rating(models.Model):
     student = models.ForeignKey(Student, on_delete=models.CASCADE)
+    accommodation = models.ForeignKey(Accommodation, on_delete=models.CASCADE)  # Establishing Accommodation → Rating relationship
     score = models.IntegerField()
 
 class CedarsSpecialist(models.Model):
@@ -95,3 +98,5 @@ class Notification(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     detail = models.TextField()
     is_read = models.BooleanField(default=False)
+    cedars_specialist = models.ForeignKey(CedarsSpecialist, on_delete=models.CASCADE)  # Linking Notification to Cedars Specialist
+
