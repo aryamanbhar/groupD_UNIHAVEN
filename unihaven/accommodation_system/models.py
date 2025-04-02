@@ -12,6 +12,7 @@ class CedarsSpecialist(models.Model):
     department = models.CharField(max_length=255)
     
 class Accommodation(models.Model):
+    property_id = models.CharField(max_length=255, unique=True)
     name = models.CharField(max_length=255)
     image = models.ImageField(upload_to='accommodation_images/', null=True, blank=True)
     type = models.CharField(max_length=100)
@@ -27,7 +28,6 @@ class Accommodation(models.Model):
     availability_end = models.DateField()
     create_date = models.DateTimeField(auto_now_add=True)
     status = models.CharField(max_length=50)
-    cedars_specialist = models.ForeignKey(CedarsSpecialist, on_delete=models.SET_NULL, null=True, blank=True)  # Linking Accommodation to Cedars Specialist
 
 
     def save(self, *args, **kwargs):
