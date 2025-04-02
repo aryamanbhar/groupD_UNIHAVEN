@@ -19,7 +19,7 @@ def accommodation_list(request):
             
             # Add accommodation data with distance sentences
             data.append({
-                'id': acc.id,
+                'id': acc.property_id,
                 'name': acc.name,
                 'price': str(acc.price),
                 'latitude': acc.latitude,
