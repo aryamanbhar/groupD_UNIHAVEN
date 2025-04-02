@@ -1,25 +1,21 @@
 from django.urls import path
-from . import views
+from .views2 import (
+    UserListCreateView, UserRetrieveUpdateDeleteView,
+    AccommodationListCreateView, AccommodationRetrieveUpdateDeleteView,
+    ReservationListCreateView, ReservationRetrieveUpdateDeleteView,
+    RatingListCreateView, RatingRetrieveUpdateDeleteView
+)
 
 urlpatterns = [
-    # Accommodation endpoints
-    # path('accommodations/', views.accommodation_list),
+    path("api/users/", UserListCreateView.as_view(), name="user-list-create"),
+    path("api/users/<int:pk>/", UserRetrieveUpdateDeleteView.as_view(), name="user-detail"),
 
-    path('accommodations/', views.accommodation_list, name='accommodation-list'),
-    
-    # Student endpoints
-    path('students/', views.student_list),
-    
-    # Reservation endpoints
-    path('reservations/', views.reservation_list),
-    
-    # Rating endpoints
-    path('ratings/', views.rating_list),
-    
-    # Specialist endpoints
-    path('specialists/', views.specialist_list),
-    
-    # Notification endpoints
-    path('notifications/', views.notification_list),
+    path("api/accommodations/", AccommodationListCreateView.as_view(), name="accommodation-list-create"),
+    path("api/accommodations/<int:pk>/", AccommodationRetrieveUpdateDeleteView.as_view(), name="accommodation-detail"),
 
+    path("api/reservations/", ReservationListCreateView.as_view(), name="reservation-list-create"),
+    path("api/reservations/<int:pk>/", ReservationRetrieveUpdateDeleteView.as_view(), name="reservation-detail"),
+
+    path("api/ratings/", RatingListCreateView.as_view(), name="rating-list-create"),
+    path("api/ratings/<int:pk>/", RatingRetrieveUpdateDeleteView.as_view(), name="rating-detail"),
 ]
