@@ -20,7 +20,7 @@ class UserRetrieveUpdateDeleteView(generics.RetrieveUpdateDestroyAPIView):
 class AccommodationListCreateView(generics.ListCreateAPIView):
     queryset = Accommodation.objects.all()
     serializer_class = AccommodationSerializer
-
+    
 class AccommodationRetrieveUpdateDeleteView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Accommodation.objects.all()
     serializer_class = AccommodationSerializer
