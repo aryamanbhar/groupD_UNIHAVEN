@@ -27,7 +27,6 @@ class Accommodation(models.Model):
     availability_end = models.DateField()
     create_date = models.DateTimeField(auto_now_add=True)
     status = models.CharField(max_length=50)
-    cedars_specialist = models.ForeignKey(CedarsSpecialist, on_delete=models.SET_NULL, null=True, blank=True)  # Linking Accommodation to Cedars Specialist
 
 
     def save(self, *args, **kwargs):
