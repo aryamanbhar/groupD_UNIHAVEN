@@ -27,19 +27,19 @@ from django.urls import path, include
 from django.http import HttpResponse
 
 # def home(request):
-#     # return HttpResponse("""
-#     #     <h1>Welcome to UniHaven API</h1>
-#     #     <p>Available endpoints:</p>
-#     #     <ul>
-#     #         <li><a href="/api/accommodations/">Accommodations</a></li>
-#     #         <li><a href="/api/students/">Students</a></li>
-#     #         <li><a href="/api/reservations/">Reservations</a></li>
-#     #         <li><a href="/api/ratings/">Ratings</a></li>
-#     #         <li><a href="/api/specialists/">Specialists</a></li>
-#     #         <li><a href="/api/notifications/">Notifications</a></li>
-#     #         <li><a href="/admin/">Admin</a></li>
-#     #     </ul>
-#     # """)
+#     return HttpResponse("""
+#         <h1>Welcome to UniHaven API</h1>
+#         <p>Available endpoints:</p>
+#         <ul>
+#             <li><a href="/accommodations/">Accommodations</a></li>
+#             <li><a href="/students/">Students</a></li>
+#             <li><a href="/reservations/">Reservations</a></li>
+#             <li><a href="/ratings/">Ratings</a></li>
+#             <li><a href="/specialists/">Specialists</a></li>
+#             <li><a href="/notifications/">Notifications</a></li>
+#             <li><a href="/admin/">Admin</a></li>
+#         </ul>
+#     """)
 
 urlpatterns = [
     path('admin/', admin.site.urls),

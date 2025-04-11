@@ -1,6 +1,7 @@
 from rest_framework import generics, filters
 from rest_framework.views import APIView
 from rest_framework.response import Response
+from rest_framework import status
 from django_filters.rest_framework import DjangoFilterBackend
 from .models import (
     User, CedarsSpecialist, Accommodation, Reservation,
@@ -11,12 +12,19 @@ from .serializers import (
     ReservationSerializer, ContractSerializer, RatingSerializer, NotificationSerializer, AccommodationSerializer
 )
 
+class AccommodationListCreateView(generics.ListCreateAPIView):
+    queryset = Accommodation.objects.all()
+    serializer_class = AccommodationSerializer
 
 class AccommodationSearchAPI(generics.ListAPIView):
-    def get(self, request):
-        accommodations = Accommodation.objects.all()
+    serializer_class = AccommodationSerializer
 
-        # Get query params
+    def get_queryset(self):
+        queryset = Accommodation.objects.all()
+        
+        # Access query params from the request
+        request = self.request
+        
         property_type = request.GET.get('type')
         beds = request.GET.get('number_of_beds')
         bedrooms = request.GET.get('number_of_bedrooms')
@@ -24,44 +32,30 @@ class AccommodationSearchAPI(generics.ListAPIView):
         available_from = request.GET.get('availability_start')
         available_to = request.GET.get('availability_end')
 
-            # Filter queryset dynamically
+        # Dynamically filter queryset based on query parameters
         if property_type:
-            accommodations = accommodations.filter(type__iexact=property_type)
+            queryset = queryset.filter(type__iexact=property_type)
         if beds:
-            accommodations = accommodations.filter(number_of_beds__gte=int(beds))
+            queryset = queryset.filter(number_of_beds__gte=int(beds))
         if bedrooms:
-            accommodations = accommodations.filter(number_of_bedrooms__gte=int(bedrooms))
+            queryset = queryset.filter(number_of_bedrooms__gte=int(bedrooms))
         if max_price:
-            accommodations = accommodations.filter(price__lte=float(max_price))
+            queryset = queryset.filter(price__lte=float(max_price))
         if available_from:
-            accommodations = accommodations.filter(availability_start__lte=available_from)
+            queryset = queryset.filter(availability_start__lte=available_from)
         if available_to:
-            accommodations = accommodations.filter(availability_end__gte=available_to)
+            queryset = queryset.filter(availability_end__gte=available_to)
 
-        serializer = AccommodationSerializer(accommodations, many=True) 
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        return queryset
+    
+class AccommodationRetrieveUpdateDeleteView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Accommodation.objects.all()
+    serializer_class = AccommodationSerializer
 
 
-    # serializer_class = AccommodationSerializer
-    # filter_backends = [DjangoFilterBackend]
-    # filterset_fields = {
-    #     'price': ['lte', 'gte'],       # Supports minPrice/maxPrice
-    #     'distance': ['lte'],           # Supports maxDistance
-    #     'number_of_bedrooms': ['exact'], 
-    #     'status': ['exact'],           # Filter by availability
-    # }
 
-    # def get_queryset(self):
-    #     queryset = Accommodation.objects.all()
-    #     # Custom filters (e.g., availability date range)
-    #     availability_start = self.request.query_params.get('availability_start')
-    #     availability_end = self.request.query_params.get('availability_end')
-    #     if availability_start and availability_end:
-    #         queryset = queryset.filter(
-    #             availability_start__gte=availability_start,
-    #             availability_end__lte=availability_end
-    #         )
-    #     return queryset
+
+
 
 
 
@@ -73,13 +67,6 @@ class UserRetrieveUpdateDeleteView(generics.RetrieveUpdateDestroyAPIView):
     queryset = User.objects.all()
     serializer_class = UserSerializer
 
-class AccommodationListCreateView(generics.ListCreateAPIView):
-    queryset = Accommodation.objects.all()
-    serializer_class = AccommodationSerializer
-    
-class AccommodationRetrieveUpdateDeleteView(generics.RetrieveUpdateDestroyAPIView):
-    queryset = Accommodation.objects.all()
-    serializer_class = AccommodationSerializer
 
 class ReservationListCreateView(generics.ListCreateAPIView):
     queryset = Reservation.objects.all()
