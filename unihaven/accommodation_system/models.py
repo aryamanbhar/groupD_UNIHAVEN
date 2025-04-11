@@ -23,7 +23,7 @@ class Accommodation(models.Model):
     owner_info = models.TextField(default='')  # fixed
     longitude = models.FloatField(default=0.0)
     latitude = models.FloatField(default=0.0)
-    distance = models.FloatField(default=0.0)
+    # distance = models.FloatField(default=0.0)
     price = models.DecimalField(max_digits=10, decimal_places=2, default=0.0)
     number_of_beds = models.IntegerField(default=0)  # fixed
     number_of_bedrooms = models.IntegerField(default=0)  # fixed

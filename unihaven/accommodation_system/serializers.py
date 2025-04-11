@@ -4,6 +4,15 @@ from .models import (
     Contract, Rating, Notification
 )
 
+class AccommodationSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Accommodation
+        fields = '__all__'
+
+
+
+
+
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
@@ -14,10 +23,6 @@ class CedarsSpecialistSerializer(serializers.ModelSerializer):
         model = CedarsSpecialist
         fields = ["id", "department"]
 
-class AccommodationSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Accommodation
-        fields = '__all__'
 
 # class AccommodationSerializer(serializers.ModelSerializer):
 #     cedars_specialist = CedarsSpecialistSerializer()
