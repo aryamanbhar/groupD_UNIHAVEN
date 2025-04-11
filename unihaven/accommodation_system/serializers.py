@@ -15,16 +15,21 @@ class CedarsSpecialistSerializer(serializers.ModelSerializer):
         fields = ["id", "department"]
 
 class AccommodationSerializer(serializers.ModelSerializer):
-    cedars_specialist = CedarsSpecialistSerializer()
-
     class Meta:
         model = Accommodation
-        fields = [
-            "id", "name", "image", "type", "owner_info", "longitude", "latitude",
-            "area", "distance", "price", "number_of_beds", "number_of_bedrooms",
-            "availability_start", "availability_end", "create_date", "status",
-            "cedars_specialist"
-        ]
+        fields = '__all__'
+
+# class AccommodationSerializer(serializers.ModelSerializer):
+#     cedars_specialist = CedarsSpecialistSerializer()
+
+#     class Meta:
+#         model = Accommodation
+#         fields = [
+#             "id", "name", "image", "type", "owner_info", "longitude", "latitude",
+#             "area", "distance", "price", "number_of_beds", "number_of_bedrooms",
+#             "availability_start", "availability_end", "create_date", "status",
+#             "cedars_specialist"
+#         ]
 
 class StudentSerializer(serializers.ModelSerializer):
     user = UserSerializer()

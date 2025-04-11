@@ -1,34 +1,36 @@
 from django.db import models
 from .services.geocoding_service import GeoCodingService
 import math
+from datetime import date
 
 class User(models.Model):
     email = models.EmailField(unique=True)
-    password = models.CharField(max_length=255)
-    phone = models.CharField(max_length=20, null=True, blank=True)
-    created_at = models.DateTimeField(auto_now_add=True)
+    password = models.CharField(max_length=255, default='')  # added default
 
 class CedarsSpecialist(models.Model):
-    department = models.CharField(max_length=255)
+    department = models.CharField(max_length=255, default='')  # added default
+
+class Student(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE, default=1)
+    name = models.CharField(max_length=255, default='')  # added default
+    degree_type = models.CharField(max_length=100, default='')  # added default
     
 class Accommodation(models.Model):
-    property_id = models.CharField(max_length=255, unique=True)
-    name = models.CharField(max_length=255)
+    property_id = models.CharField(max_length=255, unique=True, default='')
+    name = models.CharField(max_length=255, default='')
     image = models.ImageField(upload_to='accommodation_images/', null=True, blank=True)
-    type = models.CharField(max_length=100)
-    owner_info = models.TextField()
-    longitude = models.FloatField()
-    latitude = models.FloatField()
-    area = models.FloatField()
-    distance = models.FloatField()
-    price = models.DecimalField(max_digits=10, decimal_places=2)
-    number_of_beds = models.IntegerField()
-    number_of_bedrooms = models.IntegerField()
-    availability_start = models.DateField()
-    availability_end = models.DateField()
+    type = models.CharField(max_length=100, default='')
+    owner_info = models.TextField(default='')  # fixed
+    longitude = models.FloatField(default=0.0)
+    latitude = models.FloatField(default=0.0)
+    distance = models.FloatField(default=0.0)
+    price = models.DecimalField(max_digits=10, decimal_places=2, default=0.0)
+    number_of_beds = models.IntegerField(default=0)  # fixed
+    number_of_bedrooms = models.IntegerField(default=0)  # fixed
+    availability_start = models.DateField(default=date.today)  # fixed
+    availability_end = models.DateField(default=date.today)  # fixed
     create_date = models.DateTimeField(auto_now_add=True)
-    status = models.CharField(max_length=50)
-
+    status = models.CharField(max_length=50, default='')
 
     def save(self, *args, **kwargs):
         # Automatically fetch latitude and longitude if not provided
@@ -72,31 +74,23 @@ class Accommodation(models.Model):
         return self.name
         return self.latitude, self.longitude, self.distance
 
-class Student(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
-    name = models.CharField(max_length=255)
-    degree_type = models.CharField(max_length=100)
-
 class Reservation(models.Model):
-    student = models.ForeignKey(Student, on_delete=models.CASCADE)
-    accommodation = models.ForeignKey(Accommodation, on_delete=models.CASCADE)
-    status = models.CharField(max_length=50)
+    student = models.ForeignKey('Student', on_delete=models.CASCADE, default=1)
+    accommodation = models.ForeignKey('Accommodation', on_delete=models.CASCADE, default=1)
+    status = models.CharField(max_length=50, default='pending')  # added default
 
 class Contract(models.Model):
-    reservation = models.ForeignKey(Reservation, on_delete=models.CASCADE)
-    date = models.DateField()
-    document = models.FileField(upload_to='contracts/')
-    signed_at = models.DateTimeField(null=True, blank=True)
-    contract_status = models.CharField(max_length=50)
+    reservation = models.ForeignKey(Reservation, on_delete=models.CASCADE, default=1)
+    date = models.DateField(default=date.today)  # added default
+    contract_status = models.CharField(max_length=50, default='draft')  # added default
 
 class Rating(models.Model):
-    student = models.ForeignKey(Student, on_delete=models.CASCADE)
-    accommodation = models.ForeignKey(Accommodation, on_delete=models.CASCADE)  # Establishing Accommodation → Rating relationship
-    score = models.IntegerField()
+    student = models.ForeignKey('Student', on_delete=models.CASCADE, default=1)
+    accommodation = models.ForeignKey('Accommodation', on_delete=models.CASCADE, default=1)
+    score = models.IntegerField(default=0)  # added default
 
 class Notification(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    detail = models.TextField()
+    user = models.ForeignKey('User', on_delete=models.CASCADE, default=1)
+    detail = models.TextField(default='')  # added default
     is_read = models.BooleanField(default=False)
-    cedars_specialist = models.ForeignKey(CedarsSpecialist, on_delete=models.CASCADE)  # Linking Notification to Cedars Specialist
-
+    cedars_specialist = models.ForeignKey('CedarsSpecialist', on_delete=models.CASCADE, default=1)  # Make sure ID 1 exists!
