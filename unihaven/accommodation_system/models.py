@@ -2,6 +2,7 @@ from django.db import models
 from .services.geocoding_service import GeoCodingService
 import math
 from datetime import date
+from django.db.models import JSONField
 
 class User(models.Model):
     email = models.EmailField(unique=True)
@@ -24,6 +25,7 @@ class Accommodation(models.Model):
     longitude = models.FloatField(default=0.0)
     latitude = models.FloatField(default=0.0)
     # distance = models.FloatField(default=0.0)
+    distance = JSONField(default=list)
     price = models.DecimalField(max_digits=10, decimal_places=2, default=0.0)
     number_of_beds = models.IntegerField(default=0)  # fixed
     number_of_bedrooms = models.IntegerField(default=0)  # fixed
@@ -39,6 +41,8 @@ class Accommodation(models.Model):
             if geo_data:
                 self.latitude = geo_data['latitude']
                 self.longitude = geo_data['longitude']
+
+        self.distance = self.calculate_distance()
         super().save(*args, **kwargs)
 
     def calculate_distance(self):
@@ -64,15 +68,17 @@ class Accommodation(models.Model):
             return math.sqrt(x**2 + y**2) * radius_of_earth_km
 
         # Calculate distances to all campuses
-        distances = {}
+        formatted_distances = []
         for campus, coords in HKU_CAMPUSES.items():
-            distances[campus] = equirectangular(self.latitude, self.longitude, coords["latitude"], coords["longitude"])
+            distance = equirectangular(self.latitude, self.longitude, coords["latitude"], coords["longitude"])
+            formatted_distances.append(f"The distance to {campus} is {distance:.2f} km.")
 
-        return distances
+        return formatted_distances
 
     def __str__(self):
         return self.name
-        return self.latitude, self.longitude, self.distance
+        return self.latitude, self.longitude
+        return self.distance
 
 class Reservation(models.Model):
     student = models.ForeignKey('Student', on_delete=models.CASCADE, default=1)
