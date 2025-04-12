@@ -23,6 +23,7 @@ class AccommodationSearch(generics.ListAPIView):
     filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
     filterset_fields = ["name"]
     search_fields = ["name", "type"]
+    ordering_fields = ["distance"]
 
     def get_queryset(self):
         queryset = Accommodation.objects.all()
