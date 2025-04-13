@@ -1,6 +1,6 @@
 from django.urls import path
 from .views2 import (
- AccommodationDetail, AccommodationSearch, AccommodationUpload, AccommodationRetrieveUpdateDeleteView, ReservationViewAll, ReservationDetailView
+ AccommodationDetail, AccommodationSearch, AccommodationUpload, AccommodationRetrieveUpdateDeleteView, ReservationViewAll, ReservationDetailView,
  role_selection
 )
   
