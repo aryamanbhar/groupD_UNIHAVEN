@@ -3,6 +3,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from django.shortcuts import render
+from rest_framework.exceptions import ValidationError
 from django_filters.rest_framework import DjangoFilterBackend
 from .models import (
     User, CedarsSpecialist, Accommodation, Reservation,
@@ -145,6 +146,30 @@ class ReservationListView(generics.ListAPIView):
     serializer_class = ReservationSerializer
     filter_backends = [DjangoFilterBackend]
     filterset_fields = ["status", "student"]
+
+class ReservationCreateView(generics.CreateAPIView):
+    queryset = Reservation.objects.all()
+    serializer_class = ReservationSerializer
+
+    def perform_create(self, serializer):
+        student_id = self.request.data.get("student_id")
+        if not student_id:
+            raise ValidationError({"detail": "Student ID must be provided."})
+        try:
+            student = User.objects.get(id=student_id)
+        except User.DoesNotExist:
+            raise ValidationError({"detail": "Student not found."})
+        
+        accommodation_name = self.request.data.get("accommodation_name")
+        if not accommodation_name:
+            raise ValidationError({"detail": "Accommodation name must be provided."})
+        
+        try:
+            accommodation = Accommodation.objects.get(name=accommodation_name)
+        except Accommodation.DoesNotExist:
+            raise ValidationError({"detail": "Accommodation not found with the provided name."})
+        
+        serializer.save(student=student, accommodation=accommodation)
 
 class RatingListView(generics.ListAPIView):
     queryset = Rating.objects.all()
