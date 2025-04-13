@@ -173,6 +173,25 @@ class ReservationCreateView(generics.CreateAPIView):
         accommodation.save()
         serializer.save(student=student, accommodation=accommodation)
 
+class ReservationCancelView(generics.DestroyAPIView):
+    queryset = Reservation.objects.all()
+    serializer_class = ReservationSerializer
+    lookup_field = 'reservation_id'
+
+    def perform_destroy(self, instance):
+        if instance.status == "cancelled":
+            raise ValidationError({"detail": "This reservation has already been cancelled."})
+        
+        instance.status = "cancelled"
+        instance.save()
+
+        accommodation = instance.accommodation
+        accommodation.status = "available"
+        accommodation.save()
+
+        instance.delete()
+
+
 class RatingListView(generics.ListAPIView):
     queryset = Rating.objects.all()
     serializer_class = RatingSerializer
