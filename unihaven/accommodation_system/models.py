@@ -81,17 +81,21 @@ class Accommodation(models.Model):
         return self.latitude, self.longitude
         return self.distance
 
-
 class Reservation(models.Model):
-    accommodation = models.ForeignKey(Accommodation, on_delete=models.CASCADE, related_name='reservations')
-    
+    reservation_id = models.CharField(max_length=255, unique=True, default='')
+    student = models.ForeignKey(Student, on_delete=models.CASCADE, related_name="reservations")
+    accommodation = models.ForeignKey(Accommodation, on_delete=models.CASCADE, related_name="reservations")
+    status = models.CharField(
+        choices=[
+            ("available", "Available"),
+            ("reserved", "Reserved"),
+            ("cancelled", "Cancelled")
+        ],
+        default="available",
+        max_length=50
+    )
     def __str__(self):
-        return f"{self.accommodation.name}"
-
-# class Reservation(models.Model):
-#     student = models.ForeignKey('Student', on_delete=models.CASCADE, default=1)
-#     accommodation = models.ForeignKey('Accommodation', on_delete=models.CASCADE, default=1)
-#     status = models.CharField(max_length=50, default='pending')  # added default
+        return f"Reservation {self.reservation_id}: {self.student.name} - {self.accommodation.name} ({self.status})"
 
 class Contract(models.Model):
     reservation = models.ForeignKey(Reservation, on_delete=models.CASCADE, default=1)
