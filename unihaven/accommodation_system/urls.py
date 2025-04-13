@@ -1,6 +1,6 @@
 from django.urls import path
 from .views2 import (
- AccommodationDetail, AccommodationSearch, AccommodationViewAll, AccommodationUpload, AccommodationRetrieveUpdateDeleteView, ReservationViewAll, ReservationDetailView
+ AccommodationDetail, AccommodationSearch, AccommodationUpload, AccommodationRetrieveUpdateDeleteView, ReservationViewAll, ReservationDetailView
 )
   
 urlpatterns = [
