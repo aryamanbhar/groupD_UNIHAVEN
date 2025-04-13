@@ -25,21 +25,21 @@ class AccommodationSearch(generics.ListAPIView):
     search_fields = ["name", "type"]
     ordering_fields = ["distance"]
 
-    def get_queryset(self):
-        queryset = Accommodation.objects.all()
-        user_lat = self.request.query_params.get('lattitude')
-        user_lng = self.request.query_params.get('longtitude')
+    # def get_queryset(self):
+    #     queryset = Accommodation.objects.all()
+    #     user_lat = self.request.query_params.get('lattitude')
+    #     user_lng = self.request.query_params.get('longtitude')
 
-        if user_lat and user_lng:
-            # Annotate each accommodation with dynamic distance
-            for acc in queryset:
-                acc.distance = acc.calculate_distance(float(user_lat), float(user_lng))
+    #     if user_lat and user_lng:
+    #         # Annotate each accommodation with dynamic distance
+    #         for acc in queryset:
+    #             acc.distance = acc.calculate_distance(float(user_lat), float(user_lng))
             
-            # Sort if requested (?ordering=distance)
-            if self.request.query_params.get('ordering') == 'distance':
-                queryset = sorted(queryset, key=lambda x: x.distance)
+    #         # Sort if requested (?ordering=distance)
+    #         if self.request.query_params.get('ordering') == 'distance':
+    #             queryset = sorted(queryset, key=lambda x: x.distance)
 
-        return queryset
+    #     return queryset
 
 
 
