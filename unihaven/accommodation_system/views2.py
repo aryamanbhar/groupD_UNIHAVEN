@@ -2,6 +2,7 @@ from rest_framework import generics, filters, viewsets
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
+from django.shortcuts import render
 from django_filters.rest_framework import DjangoFilterBackend
 from .models import (
     User, CedarsSpecialist, Accommodation, Reservation,
@@ -11,6 +12,9 @@ from .serializers import (
     UserSerializer, CedarsSpecialistSerializer, AccommodationSerializer, StudentSerializer,
     ReservationSerializer, ContractSerializer, RatingSerializer, NotificationSerializer
 )
+
+def role_selection(request):
+    return render(request, 'role_selection.html')
 
 class AccommodationUpload(generics.ListCreateAPIView):
     queryset = Accommodation.objects.all()

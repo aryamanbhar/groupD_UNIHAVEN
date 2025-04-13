@@ -1,6 +1,7 @@
 from django.urls import path
 from .views2 import (
  AccommodationDetail, AccommodationSearch, AccommodationUpload, AccommodationRetrieveUpdateDeleteView, ReservationViewAll, ReservationDetailView
+ role_selection
 )
   
 urlpatterns = [
@@ -10,5 +11,7 @@ urlpatterns = [
     path('accommodations/search/<str:property_id>/', AccommodationDetail.as_view(), name='accommodation-detail'),
 
     path('reservations/', ReservationViewAll.as_view(), name='reservation-list-create'),
-    path('reservations/<int:id>/', ReservationDetailView.as_view(), name='reservation-detail')
+    path('reservations/<int:id>/', ReservationDetailView.as_view(), name='reservation-detail'),
+    path('login/', role_selection, name='role-selection')
+
 ]
