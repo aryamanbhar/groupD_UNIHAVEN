@@ -33,7 +33,14 @@ class Accommodation(models.Model):
     availability_start = models.DateField(default=date.today)  # fixed
     availability_end = models.DateField(default=date.today)  # fixed
     create_date = models.DateTimeField(auto_now_add=True)
-    status = models.CharField(max_length=50, default='')
+    status = models.CharField(
+        choices=[
+            ("available", "Available"),
+            ("reserved", "Reserved")
+        ],
+        default="available",
+        max_length=50
+    )
 
     def save(self, *args, **kwargs):
         # Automatically fetch latitude and longitude if not provided
