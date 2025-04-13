@@ -34,12 +34,17 @@ class StudentSerializer(serializers.ModelSerializer):
         fields = ["id", "user", "name", "degree_type"]
 
 class ReservationSerializer(serializers.ModelSerializer):
-    student = StudentSerializer()
-    accommodation = AccommodationSerializer()
-
     class Meta:
         model = Reservation
-        fields = ["id", "student", "accommodation", "status"]
+        fields = '__all__'
+
+# class ReservationSerializer(serializers.ModelSerializer):
+#     student = StudentSerializer()
+#     accommodation = AccommodationSerializer()
+
+#     class Meta:
+#         model = Reservation
+#         fields = ["id", "student", "accommodation", "status"]
 
 class ContractSerializer(serializers.ModelSerializer):
     reservation = ReservationSerializer()

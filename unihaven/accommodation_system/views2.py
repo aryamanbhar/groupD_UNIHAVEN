@@ -92,6 +92,20 @@ class AccommodationRetrieveUpdateDeleteView(generics.RetrieveUpdateDestroyAPIVie
 
 
 
+class ReservationViewAll(generics.ListAPIView):
+    queryset = Reservation.objects.all()
+    serializer_class = ReservationSerializer
+
+class ReservationDetailView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Reservation.objects.all()
+    serializer_class = ReservationSerializer
+    lookup_field = 'id'
+
+
+
+
+
+
 
 
 class UserListCreateView(generics.ListCreateAPIView):
@@ -103,13 +117,13 @@ class UserRetrieveUpdateDeleteView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = UserSerializer
 
 
-class ReservationListCreateView(generics.ListCreateAPIView):
-    queryset = Reservation.objects.all()
-    serializer_class = ReservationSerializer
+# class ReservationListCreateView(generics.ListCreateAPIView):
+#     queryset = Reservation.objects.all()
+#     serializer_class = ReservationSerializer
 
-class ReservationRetrieveUpdateDeleteView(generics.RetrieveUpdateDestroyAPIView):
-    queryset = Reservation.objects.all()
-    serializer_class = ReservationSerializer
+# class ReservationRetrieveUpdateDeleteView(generics.RetrieveUpdateDestroyAPIView):
+#     queryset = Reservation.objects.all()
+#     serializer_class = ReservationSerializer
 
 class RatingListCreateView(generics.ListCreateAPIView):
     queryset = Rating.objects.all()
