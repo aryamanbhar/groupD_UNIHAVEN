@@ -9,7 +9,7 @@ from .models import (
 )
 from .serializers import (
     UserSerializer, CedarsSpecialistSerializer, AccommodationSerializer, StudentSerializer,
-    ReservationSerializer, ContractSerializer, RatingSerializer, NotificationSerializer, AccommodationSerializer
+    ReservationSerializer, ContractSerializer, RatingSerializer, NotificationSerializer
 )
 
 class AccommodationUpload(generics.ListCreateAPIView):
@@ -27,8 +27,8 @@ class AccommodationSearch(generics.ListAPIView):
 
     def get_queryset(self):
         queryset = Accommodation.objects.all()
-        user_lat = self.request.query_params.get('lattitude')
-        user_lng = self.request.query_params.get('longtitude')
+        user_lat = self.request.query_params.get('latitude')
+        user_lng = self.request.query_params.get('longitude')
 
         if user_lat and user_lng:
             # Annotate each accommodation with dynamic distance
@@ -83,6 +83,7 @@ class AccommodationDetail(generics.RetrieveAPIView):
 class AccommodationRetrieveUpdateDeleteView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Accommodation.objects.all()
     serializer_class = AccommodationSerializer
+    lookup_field = 'property_id'
 
 
 

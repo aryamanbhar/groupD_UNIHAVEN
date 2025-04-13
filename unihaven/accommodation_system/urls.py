@@ -2,10 +2,9 @@ from django.urls import path
 from .views2 import (
  AccommodationDetail, AccommodationSearch, AccommodationViewAll, AccommodationUpload, AccommodationRetrieveUpdateDeleteView, ReservationViewAll, ReservationDetailView
 )
-
+  
 urlpatterns = [
     # Handles /accommodations/{search}
-    path('accommodations/', AccommodationViewAll.as_view(), name='accommodations'),
     path('accommodations/upload/', AccommodationUpload.as_view(), name='accommodation-list'),  
     path('accommodations/search/', AccommodationSearch.as_view(), name='accommodation-search'),
     path('accommodations/search/<str:property_id>/', AccommodationDetail.as_view(), name='accommodation-detail'),
