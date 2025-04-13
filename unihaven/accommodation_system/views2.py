@@ -74,11 +74,15 @@ class AccommodationSearch(generics.ListAPIView):
 #             queryset = queryset.filter(availability_end__gte=available_to)
 
 #         return queryset
+
+class AccommodationDetail(generics.RetrieveAPIView):
+    queryset = Accommodation.objects.all()
+    serializer_class = AccommodationSerializer
+    lookup_field = 'property_id'
     
 class AccommodationRetrieveUpdateDeleteView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Accommodation.objects.all()
     serializer_class = AccommodationSerializer
-
 
 
 
