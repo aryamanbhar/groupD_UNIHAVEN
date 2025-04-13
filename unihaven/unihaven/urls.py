@@ -26,22 +26,46 @@ from django.contrib import admin
 from django.urls import path, include
 from django.http import HttpResponse
 
-# def home(request):
-#     return HttpResponse("""
-#         <h1>Welcome to UniHaven API</h1>
-#         <p>Available endpoints:</p>
-#         <ul>
-#             <li><a href="/accommodations/">Accommodations</a></li>
-#             <li><a href="/students/">Students</a></li>
-#             <li><a href="/reservations/">Reservations</a></li>
-#             <li><a href="/ratings/">Ratings</a></li>
-#             <li><a href="/specialists/">Specialists</a></li>
-#             <li><a href="/notifications/">Notifications</a></li>
-#             <li><a href="/admin/">Admin</a></li>
-#         </ul>
-#     """)
+def home(request):
+    return HttpResponse(""""
+        <html>
+            <head>
+                <title>UniHaven API</title>
+                <style>
+                    body {
+                        font-family: Arial, sans-serif;
+                        text-align: center;
+                        padding-top: 50px;
+                    }
+                    .button {
+                        display: inline-block;
+                        padding: 15px 30px;
+                        margin: 10px;
+                        font-size: 16px;
+                        background-color: #4CAF50;
+                        color: white;
+                        border: none;
+                        border-radius: 5px;
+                        text-decoration: none;
+                        cursor: pointer;
+                        transition: background-color 0.3s ease;
+                    }
+                    .button:hover {
+                        background-color: #45a049;
+                    }
+                </style>
+            </head>
+            <body>
+                <h1>Welcome to UniHaven API</h1>
+                <p>Choose one of the following:</p>
+                <a href="/accommodations/" class="button">Accommodations</a>
+                <a href="/reservations/" class="button">Reservations</a>
+            </body>
+        </html>
+    """)
 
 urlpatterns = [
+    path('', home),
     path('admin/', admin.site.urls),
     path('accommodations/', include('accommodation_system.urls')),  # Make sure this matches your app name
 ]

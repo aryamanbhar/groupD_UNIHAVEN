@@ -75,6 +75,10 @@ class AccommodationSearch(generics.ListAPIView):
 
 #         return queryset
 
+class AccommodationViewAll(generics.ListAPIView):
+    queryset = Accommodation.objects.all()
+    serializer_class = AccommodationSerializer
+
 class AccommodationDetail(generics.RetrieveAPIView):
     queryset = Accommodation.objects.all()
     serializer_class = AccommodationSerializer
