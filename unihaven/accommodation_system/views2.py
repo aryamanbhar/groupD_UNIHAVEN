@@ -130,7 +130,6 @@ class RatingListView(generics.ListAPIView):
     queryset = Rating.objects.all()
     serializer_class = RatingSerializer
     filter_backends = [DjangoFilterBackend]
-<<<<<<< HEAD
     filterset_fields = ["score", "student", "accommodation"]
 
 
@@ -139,6 +138,3 @@ class AccommodationDetailAPI(generics.RetrieveAPIView):
     queryset = Accommodation.objects.all()
     serializer_class = AccommodationSerializer
     lookup_field = 'property_id'  # Use property_id instead of default PK
-=======
-    filterset_fields = ["score", "student", "accommodation"]
->>>>>>> a3ae116 (Updating)

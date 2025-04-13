@@ -21,6 +21,7 @@ class Accommodation(models.Model):
     name = models.CharField(max_length=255, default='')
     image = models.ImageField(upload_to='accommodation_images/', null=True, blank=True)
     type = models.CharField(max_length=100, default='')
+    area = models.CharField(max_length=100, default='')
     owner_info = models.TextField(default='')  # fixed
     longitude = models.FloatField(default=0.0)
     latitude = models.FloatField(default=0.0)
