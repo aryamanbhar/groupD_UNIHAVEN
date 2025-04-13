@@ -169,6 +169,8 @@ class ReservationCreateView(generics.CreateAPIView):
         except Accommodation.DoesNotExist:
             raise ValidationError({"detail": "Accommodation not found with the provided name."})
         
+        accommodation.status = "reserved"
+        accommodation.save()
         serializer.save(student=student, accommodation=accommodation)
 
 class RatingListView(generics.ListAPIView):
