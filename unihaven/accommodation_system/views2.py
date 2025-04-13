@@ -160,3 +160,4 @@ class AccommodationDetailAPI(generics.RetrieveAPIView):
     queryset = Accommodation.objects.all()
     serializer_class = AccommodationSerializer
     lookup_field = 'property_id'  # Use property_id instead of default PK
+
