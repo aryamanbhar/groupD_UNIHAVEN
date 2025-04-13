@@ -13,9 +13,6 @@ from .serializers import (
     ReservationSerializer, ContractSerializer, RatingSerializer, NotificationSerializer
 )
 
-def role_selection(request):
-    return render(request, 'role_selection.html')
-
 class AccommodationUpload(generics.ListCreateAPIView):
     queryset = Accommodation.objects.all()
     serializer_class = AccommodationSerializer
