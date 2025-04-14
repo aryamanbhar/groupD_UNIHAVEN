@@ -5,6 +5,8 @@ from rest_framework import status
 from django.shortcuts import render
 from rest_framework.exceptions import ValidationError
 from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.exceptions import PermissionDenied
 from .models import (
     User, CedarsSpecialist, Accommodation, Reservation,
     Contract, Rating, Notification
