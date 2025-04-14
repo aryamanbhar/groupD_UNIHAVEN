@@ -110,9 +110,21 @@ class Contract(models.Model):
     contract_status = models.CharField(max_length=50, default='draft')  # added default
 
 class Rating(models.Model):
-    student = models.ForeignKey('Student', on_delete=models.CASCADE, default=1)
-    accommodation = models.ForeignKey('Accommodation', on_delete=models.CASCADE, default=1)
-    score = models.IntegerField(default=0)  # added default
+    student = models.ForeignKey('Student', on_delete=models.CASCADE)
+    accommodation = models.ForeignKey('Accommodation', on_delete=models.CASCADE)
+    score = models.IntegerField(
+        choices=[(1, '1'), (2, '2'), (3, '3'), (4, '4'), (5, '5')],
+        default=5
+    )
+    comment = models.TextField(blank=True, null=True)
+    photo = models.ImageField(upload_to='rating_photos/', null=True, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    
+    class Meta:
+        unique_together = ('student', 'accommodation')
+    
+    def __str__(self):
+        return f"{self.score}/5 by {self.student.name} for {self.accommodation.name}"
 
 class Notification(models.Model):
     user = models.ForeignKey('User', on_delete=models.CASCADE, default=1)
