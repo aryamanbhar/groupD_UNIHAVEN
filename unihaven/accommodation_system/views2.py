@@ -198,7 +198,22 @@ class RatingListView(generics.ListAPIView):
     filter_backends = [DjangoFilterBackend]
     filterset_fields = ["score", "student", "accommodation"]
 
+class RatingRetrieveUpdateDeleteView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Rating.objects.all()
+    serializer_class = RatingSerializer
+    lookup_field = 'id'
 
+    def get_object(self):
+        rating = super().get_object()
+        if rating.student.user != self.request.user:
+            raise PermissionDenied("You can only modify your own ratings.")
+        return rating
+
+    def perform_update(self, serializer):
+        serializer.save(
+            student=self.get_object().student,
+            accommodation=self.get_object().accommodation
+        )
 
 class AccommodationDetailAPI(generics.RetrieveAPIView):
     queryset = Accommodation.objects.all()
