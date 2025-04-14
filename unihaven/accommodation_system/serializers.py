@@ -54,12 +54,16 @@ class ContractSerializer(serializers.ModelSerializer):
         fields = ["id", "reservation", "date", "document", "signed_at", "contract_status"]
 
 class RatingSerializer(serializers.ModelSerializer):
-    student = StudentSerializer()
-    accommodation = AccommodationSerializer()
+    student = StudentSerializer(read_only=True)
+    accommodation = AccommodationSerializer(read_only=True)
 
     class Meta:
         model = Rating
-        fields = ["id", "student", "accommodation", "score"]
+        fields = [
+            "id", "student", "accommodation", "score", 
+            "comment", "photo", "created_at"
+        ]
+        read_only_fields = ["student", "accommodation", "created_at"]
 
 class NotificationSerializer(serializers.ModelSerializer):
     user = UserSerializer()
