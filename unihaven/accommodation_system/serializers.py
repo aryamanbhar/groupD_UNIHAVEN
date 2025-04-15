@@ -34,9 +34,10 @@ class StudentSerializer(serializers.ModelSerializer):
         fields = ["id", "user", "name", "degree_type"]
 
 class ReservationSerializer(serializers.ModelSerializer):
+    student_id = serializers.IntegerField(write_only=True)
     class Meta:
         model = Reservation
-        fields = '__all__'
+        fields = ["reservation_id", "student_id", "accommodation", "status"]
 
 # class ReservationSerializer(serializers.ModelSerializer):
 #     student = StudentSerializer()
