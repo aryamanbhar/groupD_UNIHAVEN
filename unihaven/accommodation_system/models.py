@@ -3,7 +3,6 @@ from .services.geocoding_service import GeoCodingService
 import math
 from datetime import date
 from django.db.models import JSONField
-from django.core.validators import MinValueValidator, MaxValueValidator
 
 class User(models.Model):
     email = models.EmailField(unique=True)
