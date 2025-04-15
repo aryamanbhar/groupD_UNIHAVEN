@@ -105,28 +105,35 @@ class ReservationCreateView(generics.ListCreateAPIView):
     queryset = Reservation.objects.all()
     serializer_class = ReservationSerializer
 
-
     def perform_create(self, serializer):
+        # All validation is handled in the serializer
+        serializer.save()
+
+        
         # Extract student and accommodation from validated data
-        student_id = serializer.validated_data.get("student_id")
-        accommodation = serializer.validated_data.get("accommodation")
+        # student_id = serializer.validated_data.get("student_id")
+        # accommodation = serializer.validated_data.get("accommodation")
 
-        # Ensure the student exists
-        try:
-            student = Student.objects.get(id=student_id)
-        except Student.DoesNotExist:
-            raise ValidationError({"student_id": "Student does not exist."})
+        # # Ensure the student exists
+        # try:
+        #     student = Student.objects.get(id=student_id)
+        # except Student.DoesNotExist:
+        #     raise ValidationError({"student_id": "Student does not exist."})
 
-        # Ensure the accommodation is available
-        if accommodation.status != "available":
-            raise ValidationError({"accommodation": "This accommodation is not available for reservation."})
+        # # Ensure the accommodation is available
+        # if accommodation.status != "available":
+        #     raise ValidationError({"accommodation": "This accommodation is not available for reservation."})
+    
+        # if Reservation.objects.filter(accommodation=accommodation).exists():
+        #     raise ValidationError({"accommodation": "This accommodation already has a reservation."})
 
-        # Update the accommodation status to "reserved"
-        accommodation.status = "reserved"
-        accommodation.save()
 
-        # Save the reservation with the student and accommodation
-        serializer.save(student=student, accommodation=accommodation)
+        # # Update the accommodation status to "reserved"
+        # accommodation.status = "reserved"
+        # accommodation.save()
+
+        # # Save the reservation with the student and accommodation
+        # serializer.save(student=student_id, accommodation=accommodation)
     
 
 class ReservationCancelView(generics.DestroyAPIView):
