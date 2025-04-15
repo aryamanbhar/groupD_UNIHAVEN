@@ -1,4 +1,5 @@
 from rest_framework import generics, filters, viewsets
+from .filters import AccommodationFilter
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
@@ -21,31 +22,42 @@ class AccommodationUpload(generics.ListCreateAPIView):
     serializer_class = AccommodationSerializer
 
 
+# class AccommodationSearch(generics.ListAPIView):
+#     queryset = Accommodation.objects.all()
+#     serializer_class = AccommodationSerializer
+#     filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
+#     filterset_fields = ["name"]
+#     search_fields = ["name", "type"]
+#     ordering_fields = ["distance"]
+
+#     def get_queryset(self):
+#         queryset = Accommodation.objects.all()
+#         user_lat = self.request.query_params.get('latitude')
+#         user_lng = self.request.query_params.get('longitude')
+
+#         if user_lat and user_lng:
+#             # Annotate each accommodation with dynamic distance
+#             for acc in queryset:
+#                 acc.distance = acc.calculate_distance(float(user_lat), float(user_lng))
+            
+#             # Sort if requested (?ordering=distance)
+#             if self.request.query_params.get('ordering') == 'distance':
+#                 queryset = sorted(queryset, key=lambda x: x.distance)
+
+#         return queryset
+
 class AccommodationSearch(generics.ListAPIView):
-    queryset = Accommodation.objects.all()
     serializer_class = AccommodationSerializer
-    filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
-    filterset_fields = ["name"]
-    search_fields = ["name", "type"]
-    ordering_fields = ["distance"]
+    filterset_class = AccommodationFilter
+    filter_backends = [filters.SearchFilter, DjangoFilterBackend, filters.OrderingFilter]
+    search_fields = ["type", "name"]
+    # ordering_fields = ["type", "number_of_beds", "number_of_bedrooms", "Main Campus", "Sassoon Road Campus", "Swire Institute of Marine Science", "Kadoorie Centre", "Faculty of Dentistry", "availability_start", "availability_end", "price"]
+    ordering_fields = ["type", "number_of_beds", "number_of_bedrooms", "availability_start", "availability_end", "price", "distance"]
 
     def get_queryset(self):
         queryset = Accommodation.objects.all()
-        user_lat = self.request.query_params.get('latitude')
-        user_lng = self.request.query_params.get('longitude')
-
-        if user_lat and user_lng:
-            # Annotate each accommodation with dynamic distance
-            for acc in queryset:
-                acc.distance = acc.calculate_distance(float(user_lat), float(user_lng))
-            
-            # Sort if requested (?ordering=distance)
-            if self.request.query_params.get('ordering') == 'distance':
-                queryset = sorted(queryset, key=lambda x: x.distance)
 
         return queryset
-
-
 
 # class AccommodationSearchAPI(generics.ListAPIView):
 #     serializer_class = AccommodationSerializer
