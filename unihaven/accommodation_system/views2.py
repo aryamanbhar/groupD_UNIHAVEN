@@ -11,7 +11,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.exceptions import PermissionDenied
 from .models import (
     User, CedarsSpecialist, Accommodation, Reservation,
-    Contract, Rating, Notification
+    Contract, Rating, Notification, Student
 )
 from .serializers import (
     UserSerializer, CedarsSpecialistSerializer, AccommodationSerializer, StudentSerializer,
@@ -192,8 +192,8 @@ class ReservationCreateView(generics.CreateAPIView):
             raise ValidationError({"detail": "You must provide your Student ID."})
 
         try:
-            student = User.objects.get(id=student_id)
-        except User.DoesNotExist:
+            student = Student.objects.get(id=student_id)
+        except Student.DoesNotExist:
             raise ValidationError({"detail": "Invalid Student ID. No matching student found."})
 
         accommodation_id = self.request.data.get("accommodation_id")
