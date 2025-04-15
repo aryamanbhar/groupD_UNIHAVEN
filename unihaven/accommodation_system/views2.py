@@ -6,6 +6,7 @@ from rest_framework import status
 from django.shortcuts import render
 from rest_framework.exceptions import ValidationError
 from django_filters.rest_framework import DjangoFilterBackend
+from django.shortcuts import get_object_or_404
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.exceptions import PermissionDenied
 from .models import (
@@ -185,27 +186,20 @@ class ReservationCreateView(generics.CreateAPIView):
     queryset = Reservation.objects.all()
     serializer_class = ReservationSerializer
 
-    def perform_create(self, serializer):
+    def perform_create(self, serializer): 
         student_id = self.request.data.get("student_id")
         if not student_id:
-            raise ValidationError({"detail": "Student ID must be provided."})
+            raise ValidationError({"detail": "You must provide your Student ID."})
+
         try:
             student = User.objects.get(id=student_id)
         except User.DoesNotExist:
-            raise ValidationError({"detail": "Student not found."})
-        
-        accommodation_name = self.request.data.get("accommodation_name")
-        if not accommodation_name:
-            raise ValidationError({"detail": "Accommodation name must be provided."})
-        
-        try:
-            accommodation = Accommodation.objects.get(name=accommodation_name)
-        except Accommodation.DoesNotExist:
-            raise ValidationError({"detail": "Accommodation not found with the provided name."})
-        
-        accommodation.status = "reserved"
-        accommodation.save()
+            raise ValidationError({"detail": "Invalid Student ID. No matching student found."})
+
+        accommodation_id = self.request.data.get("accommodation_id")
+        accommodation = get_object_or_404(Accommodation, pk=accommodation_id)
         serializer.save(student=student, accommodation=accommodation)
+
 
 class ReservationCancelView(generics.DestroyAPIView):
     queryset = Reservation.objects.all()
