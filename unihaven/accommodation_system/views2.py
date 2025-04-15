@@ -64,7 +64,8 @@ class AccommodationSearch(generics.ListAPIView):
     ordering_fields = ["type", "number_of_beds", "number_of_bedrooms", "availability_start", "availability_end", "price", "distance"]
 
     def get_queryset(self):
-        queryset = Accommodation.objects.all()
+        # queryset = Accommodation.objects.all()
+        return Accommodation.objects.filter(status="available")
 
         return queryset
 
@@ -91,9 +92,7 @@ class AccommodationRetrieveUpdateDeleteView(generics.RetrieveUpdateDestroyAPIVie
 
 
 #RESERVATION
-
-
-class ReservationViewAll(generics.ListAPIView):
+class ReservationListView(generics.ListAPIView):
     queryset = Reservation.objects.all()
     serializer_class = ReservationSerializer
 
@@ -102,46 +101,33 @@ class ReservationDetailView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = ReservationSerializer
     lookup_field = 'id'
 
-
-class ReservationListView(generics.ListAPIView):
-    queryset = Reservation.objects.all()
-    serializer_class = ReservationSerializer
-    filter_backends = [DjangoFilterBackend]
-    filterset_fields = ["status", "student"]
-
-
 class ReservationCreateView(generics.ListCreateAPIView):
     queryset = Reservation.objects.all()
     serializer_class = ReservationSerializer
+
+
+    def perform_create(self, serializer):
+        # Extract student and accommodation from validated data
+        student_id = serializer.validated_data.get("student_id")
+        accommodation = serializer.validated_data.get("accommodation")
+
+        # Ensure the student exists
+        try:
+            student = Student.objects.get(id=student_id)
+        except Student.DoesNotExist:
+            raise ValidationError({"student_id": "Student does not exist."})
+
+        # Ensure the accommodation is available
+        if accommodation.status != "available":
+            raise ValidationError({"accommodation": "This accommodation is not available for reservation."})
+
+        # Update the accommodation status to "reserved"
+        accommodation.status = "reserved"
+        accommodation.save()
+
+        # Save the reservation with the student and accommodation
+        serializer.save(student=student, accommodation=accommodation)
     
-
-# class ReservationCreateView(generics.ListCreateAPIView):
-#     queryset = Reservation.objects.all()
-#     serializer_class = ReservationSerializer
-
-#     def perform_create(self, serializer):
-#         student_id = self.request.data.get("student_id")
-#         if not student_id:
-#             raise ValidationError({"detail": "Student ID must be provided."})
-#         try:
-#             student = User.objects.get(id=student_id)
-#         except User.DoesNotExist:
-#             raise ValidationError({"detail": "Student not found."})
-        
-#         accommodation_name = self.request.data.get("accommodation_name")
-#         if not accommodation_name:
-#             raise ValidationError({"detail": "Accommodation name must be provided."})
-        
-#         try:
-#             accommodation = Accommodation.objects.get(name=accommodation_name)
-#         except Accommodation.DoesNotExist:
-#             raise ValidationError({"detail": "Accommodation not found with the provided name."})
-        
-#         accommodation.status = "reserved"
-#         accommodation.save()
-#         serializer.save(student=student, accommodation=accommodation)
-
-
 
 class ReservationCancelView(generics.DestroyAPIView):
     queryset = Reservation.objects.all()

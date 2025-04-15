@@ -35,9 +35,35 @@ class StudentSerializer(serializers.ModelSerializer):
 
 class ReservationSerializer(serializers.ModelSerializer):
     student_id = serializers.IntegerField(write_only=True)
+    accommodation = serializers.PrimaryKeyRelatedField(queryset=Accommodation.objects.filter(status="available"))
+    accommodation_details = serializers.StringRelatedField(source='accommodation', read_only=True)
+
+
     class Meta:
         model = Reservation
-        fields = ["reservation_id", "student_id", "accommodation", "status"]
+        fields = ["student_id", "accommodation", "status", "accommodation_details"]
+        read_only_fields = ["reservation_id", "status"]
+    
+    def create(self, validated_data):
+        validated_data["status"] = "reserved" 
+        return validated_data
+
+    def validate(self, data):
+        accommodation_name = data.get("accommodation")
+        try:
+            accommodation = Accommodation.objects.get(name=accommodation_name, status="available")
+        except Accommodation.DoesNotExist:
+            raise serializers.ValidationError({"accommodation": f"Accommodation '{accommodation_name}' does not exist or is not available."})
+
+        # Replace the accommodation name with the actual Accommodation instance
+        data["accommodation"] = accommodation
+
+        # Ensure the student exists
+        student_id = data.get("student_id")
+        if not Student.objects.filter(id=student_id).exists():
+            raise serializers.ValidationError({"student_id": "Student does not exist."})
+
+        return data
 
 # class ReservationSerializer(serializers.ModelSerializer):
 #     student = StudentSerializer()

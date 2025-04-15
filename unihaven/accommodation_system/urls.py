@@ -1,7 +1,7 @@
 from django.urls import path
 from .views2 import (
  AccommodationDetail, AccommodationSearch, AccommodationUpload, AccommodationsViewAll, AccommodationRetrieveUpdateDeleteView, ReservationCancelView, 
- ReservationCreateView, ReservationListView, ReservationViewAll, ReservationDetailView, StudentCreateView
+ ReservationCreateView, ReservationListView, ReservationDetailView, StudentCreateView
 )
   
 urlpatterns = [
