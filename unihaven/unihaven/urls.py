@@ -67,5 +67,5 @@ def home(request):
 urlpatterns = [
     path('', home),
     path('admin/', admin.site.urls),
-    path('', include('accommodation_system.urls')),  # Make sure this matches your app name
+    path('', include('accommodation_system.urls'))  # Make sure this matches your app name
 ]
