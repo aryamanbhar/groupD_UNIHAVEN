@@ -19,6 +19,11 @@ from .serializers import (
 
 #ACCOMMODATIONS
 
+class AccommodationsViewAll(generics.ListAPIView):
+    queryset = Accommodation.objects.all()
+    serializer_class = AccommodationSerializer
+    pagination_class = None  # Remove if you want pagination
+
 class AccommodationUpload(generics.ListCreateAPIView):
     queryset = Accommodation.objects.all()
     serializer_class = AccommodationSerializer
@@ -89,33 +94,39 @@ class ReservationListView(generics.ListAPIView):
     filter_backends = [DjangoFilterBackend]
     filterset_fields = ["status", "student"]
 
+
 class ReservationCreateView(generics.ListCreateAPIView):
     queryset = Reservation.objects.all()
     serializer_class = ReservationSerializer
+    
 
-    def perform_create(self, serializer):
-        student_id = self.request.data.get("student_id")
-        if not student_id:
-            raise ValidationError({"detail": "Student ID must be provided."})
-        try:
-            student = User.objects.get(id=student_id)
-        except User.DoesNotExist:
-            raise ValidationError({"detail": "Student not found."})
-        
-        accommodation_name = self.request.data.get("accommodation_name")
-        if not accommodation_name:
-            raise ValidationError({"detail": "Accommodation name must be provided."})
-        
-        try:
-            accommodation = Accommodation.objects.get(name=accommodation_name)
-        except Accommodation.DoesNotExist:
-            raise ValidationError({"detail": "Accommodation not found with the provided name."})
-        
-        accommodation.status = "reserved"
-        accommodation.save()
-        serializer.save(student=student, accommodation=accommodation)
+# class ReservationCreateView(generics.ListCreateAPIView):
+#     queryset = Reservation.objects.all()
+#     serializer_class = ReservationSerializer
 
+#     def perform_create(self, serializer):
+#         student_id = self.request.data.get("student_id")
+#         if not student_id:
+#             raise ValidationError({"detail": "Student ID must be provided."})
+#         try:
+#             student = User.objects.get(id=student_id)
+#         except User.DoesNotExist:
+#             raise ValidationError({"detail": "Student not found."})
         
+#         accommodation_name = self.request.data.get("accommodation_name")
+#         if not accommodation_name:
+#             raise ValidationError({"detail": "Accommodation name must be provided."})
+        
+#         try:
+#             accommodation = Accommodation.objects.get(name=accommodation_name)
+#         except Accommodation.DoesNotExist:
+#             raise ValidationError({"detail": "Accommodation not found with the provided name."})
+        
+#         accommodation.status = "reserved"
+#         accommodation.save()
+#         serializer.save(student=student, accommodation=accommodation)
+
+
 
 class ReservationCancelView(generics.DestroyAPIView):
     queryset = Reservation.objects.all()

@@ -3,6 +3,7 @@ from .services.geocoding_service import GeoCodingService
 import math
 from datetime import date
 from django.db.models import JSONField
+from django.core.validators import MinValueValidator, MaxValueValidator
 
 class User(models.Model):
     email = models.EmailField(unique=True)
@@ -90,7 +91,7 @@ class Accommodation(models.Model):
 
 class Reservation(models.Model):
     reservation_id = models.CharField(max_length=255, unique=True, default='')
-    student = models.ForeignKey(Student, on_delete=models.CASCADE, related_name="reservations")
+    student = models.ForeignKey(Student, on_delete=models.CASCADE, related_name="reservations", default='')
     accommodation = models.ForeignKey(Accommodation, on_delete=models.CASCADE, related_name="reservations")
     status = models.CharField(
         choices=[
@@ -121,8 +122,8 @@ class Rating(models.Model):
     )
     comment = models.TextField(blank=True, null=True)
     photo = models.ImageField(upload_to='rating_photos/', blank=True, null=True)
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
+    created_at = models.DateTimeField(auto_now_add=True, null=True)
+    updated_at = models.DateTimeField(auto_now=True, null=True)
 
     class Meta:
         unique_together = ('student', 'accommodation')
