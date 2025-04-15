@@ -10,12 +10,12 @@ from django.shortcuts import get_object_or_404
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.exceptions import PermissionDenied
 from .models import (
-    User, CedarsSpecialist, Accommodation, Reservation,
+    CedarsSpecialist, Accommodation, Reservation,
     Contract, Rating, Notification, Student
 )
 from .serializers import (
-    UserSerializer, CedarsSpecialistSerializer, AccommodationSerializer, StudentSerializer,
-    ReservationSerializer, ContractSerializer, RatingSerializer, NotificationSerializer
+    CedarsSpecialistSerializer, AccommodationSerializer, StudentSerializer,
+    ReservationSerializer, ContractSerializer, RatingSerializer
 )
 
 
@@ -215,13 +215,17 @@ class ReservationCreateView(generics.CreateAPIView):
     serializer_class = ReservationSerializer
 
     def perform_create(self, serializer): 
-        student_id = serializer.validated_data.pop("student_id")
-        student = get_object_or_404(Student, id=student_id) 
+        student_id = serializer.validated_data.get("student_id")
+        # student = Student.objects.get_or_create(id=student_id)
 
-        accommodation_id = serializer.validated_data["accommodation"].id
-        accommodation = get_object_or_404(Accommodation, pk=accommodation_id)
+        student, created = Student.objects.get_or_create(id=student_id)
+        # student_id = serializer.validated_data.pop("student_id")
+        # student = get_object_or_404(Student, id=student_id) 
+
+        # accommodation_id = serializer.validated_data["accommodation"].id
+        # accommodation = get_object_or_404(Accommodation, pk=accommodation_id)
+        accommodation = serializer.validated_data.get("accommodation")
         serializer.save(student=student, accommodation=accommodation)
-
 
 
 class ReservationCancelView(generics.DestroyAPIView):
@@ -255,11 +259,16 @@ class RatingListView(generics.ListAPIView):
 
 
 
-class UserListCreateView(generics.ListCreateAPIView):
-    queryset = User.objects.all()
-    serializer_class = UserSerializer
+# class UserListCreateView(generics.ListCreateAPIView):
+#     queryset = User.objects.all()
+#     serializer_class = UserSerializer
 
-class UserRetrieveUpdateDeleteView(generics.RetrieveUpdateDestroyAPIView):
-    queryset = User.objects.all()
-    serializer_class = UserSerializer
+# class UserRetrieveUpdateDeleteView(generics.RetrieveUpdateDestroyAPIView):
+#     queryset = User.objects.all()
+#     serializer_class = UserSerializer
 
+
+
+class StudentCreateView(generics.CreateAPIView):
+    queryset = Student.objects.all()
+    serializer_class = StudentSerializer

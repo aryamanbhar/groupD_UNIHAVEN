@@ -1,13 +1,13 @@
 from rest_framework import serializers
 from .models import (
-    User, CedarsSpecialist, Accommodation, Student, Reservation,
+    CedarsSpecialist, Accommodation, Student, Reservation,
     Contract, Rating, Notification
 )
 
-class UserSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = User
-        fields = ["id", "email", "phone", "created_at"]
+# class UserSerializer(serializers.ModelSerializer):
+#     class Meta:
+#         model = User
+#         fields = ["id", "email", "phone", "created_at"]
 
 class CedarsSpecialistSerializer(serializers.ModelSerializer):
     class Meta:
@@ -27,11 +27,11 @@ class AccommodationSerializer(serializers.ModelSerializer):
         ]
 
 class StudentSerializer(serializers.ModelSerializer):
-    user = UserSerializer()
+    # user = UserSerializer()
 
     class Meta:
         model = Student
-        fields = ["id", "user", "name", "degree_type"]
+        fields = ["student_id", "name", "degree_type"]
 
 class ReservationSerializer(serializers.ModelSerializer):
     student_id = serializers.IntegerField(write_only=True)
@@ -63,10 +63,10 @@ class RatingSerializer(serializers.ModelSerializer):
         fields = ["id", "student", "accommodation", "score", "comment", "photo", "created_at", "updated_at"]
         read_only_fields = ["student", "accommodation", "created_at"]
         
-class NotificationSerializer(serializers.ModelSerializer):
-    user = UserSerializer()
-    cedars_specialist = CedarsSpecialistSerializer()
+# class NotificationSerializer(serializers.ModelSerializer):
+#     user = UserSerializer()
+#     cedars_specialist = CedarsSpecialistSerializer()
 
-    class Meta:
-        model = Notification
-        fields = ["id", "user", "detail", "is_read", "cedars_specialist"]
+#     class Meta:
+#         model = Notification
+#         fields = ["id", "user", "detail", "is_read", "cedars_specialist"]

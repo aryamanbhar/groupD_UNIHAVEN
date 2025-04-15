@@ -1,7 +1,7 @@
 from django.urls import path
 from .views2 import (
  AccommodationDetail, AccommodationSearch, AccommodationUpload, AccommodationsViewAll, AccommodationRetrieveUpdateDeleteView, ReservationCancelView, 
- ReservationCreateView, ReservationListView, ReservationViewAll, ReservationDetailView
+ ReservationCreateView, ReservationListView, ReservationViewAll, ReservationDetailView, StudentCreateView
 )
   
 urlpatterns = [
@@ -13,4 +13,5 @@ urlpatterns = [
     path("reservations/<str:reservation_id>/cancel/", ReservationCancelView.as_view(), name="reservation-cancel"),
     path("reservations/<str:reservation_id>/", ReservationDetailView.as_view(), name="reservation-detail"),
     path("reservations/", ReservationListView.as_view(), name="reservation-list"),
+    path("students/create/", StudentCreateView.as_view(), name="student-create"),
 ]

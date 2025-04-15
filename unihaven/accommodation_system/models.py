@@ -5,15 +5,12 @@ from datetime import date
 from django.db.models import JSONField
 from django.core.validators import MinValueValidator, MaxValueValidator
 
-class User(models.Model):
-    email = models.EmailField(unique=True)
-    password = models.CharField(max_length=255, default='')  # added default
-
 class CedarsSpecialist(models.Model):
     department = models.CharField(max_length=255, default='')  # added default
 
 class Student(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE, default=1)
+    student_id = models.CharField(max_length=255, unique=True, default='')
+    # user = models.OneToOneField(User, on_delete=models.CASCADE, default=1)
     name = models.CharField(max_length=255, default='')  # added default
     degree_type = models.CharField(max_length=100, default='')  # added default
     
@@ -132,7 +129,7 @@ class Rating(models.Model):
         return f"{self.student.name}'s rating ({self.score}) for {self.accommodation.name}"
 
 class Notification(models.Model):
-    user = models.ForeignKey('User', on_delete=models.CASCADE, default=1)
+    student = models.ForeignKey('Student', on_delete=models.CASCADE, default=1)
     detail = models.TextField(default='')  # added default
     is_read = models.BooleanField(default=False)
     cedars_specialist = models.ForeignKey('CedarsSpecialist', on_delete=models.CASCADE, default=1)  # Make sure ID 1 exists!
