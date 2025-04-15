@@ -187,18 +187,13 @@ class ReservationCreateView(generics.CreateAPIView):
     serializer_class = ReservationSerializer
 
     def perform_create(self, serializer): 
-        student_id = self.request.data.get("student_id")
-        if not student_id:
-            raise ValidationError({"detail": "You must provide your Student ID."})
+        student_id = serializer.validated_data.pop("student_id")
+        student = get_object_or_404(Student, id=student_id) 
 
-        try:
-            student = Student.objects.get(id=student_id)
-        except Student.DoesNotExist:
-            raise ValidationError({"detail": "Invalid Student ID. No matching student found."})
-
-        accommodation_id = self.request.data.get("accommodation_id")
+        accommodation_id = serializer.validated_data["accommodation"].id
         accommodation = get_object_or_404(Accommodation, pk=accommodation_id)
         serializer.save(student=student, accommodation=accommodation)
+
 
 
 class ReservationCancelView(generics.DestroyAPIView):
