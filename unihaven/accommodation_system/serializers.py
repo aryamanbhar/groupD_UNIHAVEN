@@ -101,7 +101,7 @@ class ContractSerializer(serializers.ModelSerializer):
         fields = ["id", "reservation", "date", "document", "signed_at", "contract_status"]
 
 class RatingSerializer(serializers.ModelSerializer):
-    score = serializers.IntegerField(min_value=1, max_value=5)  # 显式声明数值范围
+    score = serializers.IntegerField(min_value=1, max_value=5)
     
     class Meta:
         model = Rating
