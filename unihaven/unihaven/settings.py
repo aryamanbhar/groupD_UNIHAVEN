@@ -116,7 +116,7 @@ SPECTACULAR_SETTINGS = {
     'TITLE': 'UniHaven API',
     'DESCRIPTION': 'API for managing accommodations and reservations.',
     'VERSION': '1.0.0',
-    'SERVE_INCLUDE_SCHEMA': False
+    'SERVE_INCLUDE_SCHEMA': True
 }
 
 # Internationalization
