@@ -161,9 +161,45 @@ class Reservation(models.Model):
         return f"Reservation {self.reservation_id}: {self.student.name} - {self.accommodation.name} ({self.status})"
 
 class Contract(models.Model):
+    contract_id = models.AutoField(primary_key=True)
     reservation = models.ForeignKey(Reservation, on_delete=models.CASCADE, default=1)
-    date = models.DateField(default=date.today)  # added default
-    contract_status = models.CharField(max_length=50, default='draft')  # added default
+    date = models.DateField(default=date.today) 
+    contract_status = models.CharField(
+        max_length=50,
+        choices=[
+            ('draft', 'Draft'),
+            ('signed', 'Signed'),
+            ('completed', 'Completed'),
+            ('failed', 'Failed') 
+        ],
+        default='draft'
+    )
+
+    def save(self, *args, **kwargs):
+        """
+        Override save method to handle status updates when contract_status is set to 'failed'.
+        """
+        # Check if the contract status is being set to 'failed'
+        if self.contract_status == 'failed':
+            # Update the reservation status to 'cancelled'
+            self.reservation.status = 'cancelled'
+            self.reservation.save()
+
+            # Update the accommodation status to 'available'
+            accommodation = self.reservation.accommodation
+            accommodation.status = 'available'
+            accommodation.save()
+
+        super().save(*args, **kwargs)
+
+    def has_failed(self):
+        """
+        Check if the contract has failed.
+        """
+        return self.contract_status == 'failed'
+
+    def __str__(self):
+        return f"Contract for Reservation {self.reservation.reservation_id} - Status: {self.contract_status}"
 
 class Rating(models.Model):
     student = models.ForeignKey(
