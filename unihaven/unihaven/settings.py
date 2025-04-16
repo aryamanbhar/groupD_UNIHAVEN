@@ -12,6 +12,9 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 
 from pathlib import Path
 import os
+import smtplib
+import ssl
+from django.core.mail.backends.smtp import EmailBackend
 
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -129,3 +132,40 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+
+class CustomEmailBackend(EmailBackend):
+    def open(self):
+        if self.connection:
+            return self.connection
+
+        context = ssl._create_unverified_context()
+
+        self.connection = self.connection_class(
+            self.host,
+            self.port,
+            timeout=self.timeout,
+            local_hostname=None,  
+        )
+
+        if self.use_tls:
+            self.connection.starttls(context=context)
+
+        self.connection.connect()
+        return self.connection
+    
+EMAIL_BACKEND = 'unihaven.settings.CustomEmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'unihavengroupd@gmail.com'
+EMAIL_HOST_PASSWORD = 'xlbr whjy hihb njuh'
+
+try:
+    server = smtplib.SMTP('smtp.gmail.com', 587)
+    server.starttls()
+    server.login('unihavengroupd@gmail.com', 'xlbr whjy hihb njuh') 
+    print("SMTP connection successful!")
+    server.quit()
+except Exception as e:
+    print(f"SMTP connection failed: {e}")
