@@ -112,6 +112,12 @@ REST_FRAMEWORK = {
     'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema'
 }
 
+SPECTACULAR_SETTINGS = {
+    'TITLE': 'UniHaven API',
+    'DESCRIPTION': 'API for managing accommodations and reservations.',
+    'VERSION': '1.0.0',
+    'SERVE_INCLUDE_SCHEMA': False
+}
 
 # Internationalization
 # https://docs.djangoproject.com/en/5.1/topics/i18n/
