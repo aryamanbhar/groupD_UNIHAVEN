@@ -1,7 +1,7 @@
 from django.urls import path
 from .views2 import (
  AccommodationDetail, AccommodationSearch, AccommodationUpload, AccommodationsViewAll, AccommodationRetrieveUpdateDeleteView, ReservationCancelView, 
- ReservationCreateView, ReservationListView, ReservationDetailView, StudentCreateView, CedarsSpecialistCreateView, CedarsSpecialistListView, RatingCreateView
+ ReservationCreateView, ReservationListView, ReservationDetailView, StudentCreateView, CedarsSpecialistCreateView, CedarsSpecialistListView, RatingCreateView, update_contract_status
 )
 from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView, SpectacularRedocView
 
