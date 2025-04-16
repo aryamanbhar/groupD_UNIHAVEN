@@ -11,6 +11,7 @@ from email.mime.text import MIMEText
 
 class CedarsSpecialist(models.Model):
     department = models.CharField(max_length=255, default='')  # added default
+    email = models.EmailField(unique=True)
 
 class Student(models.Model):
     student_id = models.CharField(max_length=255, unique=True, default='')
