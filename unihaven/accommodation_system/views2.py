@@ -66,20 +66,10 @@ class AccommodationRetrieveUpdateDeleteView(generics.RetrieveUpdateDestroyAPIVie
 
 
 #RESERVATION
-class ReservationListView(generics.ListAPIView):
-    queryset = Reservation.objects.all()
-    serializer_class = ReservationSerializer
-
-class ReservationDetailView(generics.RetrieveUpdateDestroyAPIView):
-    queryset = Reservation.objects.all()
-    serializer_class = ReservationSerializer
-    lookup_field = 'id'
 
 class ReservationListView(generics.ListAPIView):
     queryset = Reservation.objects.all()
     serializer_class = ReservationSerializer
-    filter_backends = [DjangoFilterBackend]
-    filterset_fields = ["status", "student"]
 
 class ReservationCreateView(generics.CreateAPIView):
     queryset = Reservation.objects.all()
@@ -87,9 +77,16 @@ class ReservationCreateView(generics.CreateAPIView):
 
     def perform_create(self, serializer): 
         student_id = serializer.validated_data.get("student_id")
+
         student, created = Student.objects.get_or_create(id=student_id)
         accommodation = serializer.validated_data.get("accommodation")
         serializer.save(student=student, accommodation=accommodation)
+
+
+class ReservationDetailView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Reservation.objects.all()
+    serializer_class = ReservationSerializer
+    lookup_field = 'reservation_id'
 
 
 class ReservationCancelView(generics.DestroyAPIView):
@@ -109,6 +106,8 @@ class ReservationCancelView(generics.DestroyAPIView):
         accommodation.save()
 
         instance.delete()
+
+
 
 
 
