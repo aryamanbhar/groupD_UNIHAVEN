@@ -3,22 +3,9 @@ info:
   title: UniHaven API
   version: 1.0.0
   description: API for managing accommodations and reservations.
-
-tags:
-  - name: accommodations
-    description: Manage accommodation listings, uploads, and search operations.
-  - name: reservations
-    description: Handle booking creation, cancellation, and retrieval.
-  - name: students
-    description: Manage student profiles and creation.
-  - name: cedars_specialists
-    description: Manage Cedars Specialists and their details.
-
-
 paths:
   /accommodations/:
     get:
-      summary: Lists the accommodations
       operationId: accommodations_list
       tags:
       - accommodations
@@ -35,9 +22,36 @@ paths:
                 items:
                   $ref: '#/components/schemas/Accommodation'
           description: ''
+  /accommodations/rate/:
+    post:
+      operationId: accommodations_rate_create
+      tags:
+      - accommodations
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Rating'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Rating'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Rating'
+        required: true
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Rating'
+          description: ''
   /accommodations/search/:
     get:
-      summary: Apply filters to accommodation searches
       operationId: accommodations_search_list
       parameters:
       - in: query
@@ -127,7 +141,6 @@ paths:
                 $ref: '#/components/schemas/Accommodation'
           description: ''
   /accommodations/upload/:
-    summary: Uploads a new accommodation listing
     get:
       operationId: accommodations_upload_list
       tags:
@@ -172,7 +185,6 @@ paths:
                 $ref: '#/components/schemas/Accommodation'
           description: ''
   /cedars_specialists/:
-
     get:
       operationId: cedars_specialists_list
       tags:
@@ -191,7 +203,6 @@ paths:
                   $ref: '#/components/schemas/CedarsSpecialist'
           description: ''
   /cedars_specialists/create/:
-    summary: Creates Cedars Specialist profile
     post:
       operationId: cedars_specialists_create_create
       tags:
@@ -220,7 +231,6 @@ paths:
                 $ref: '#/components/schemas/CedarsSpecialist'
           description: ''
   /reservations/:
-    summary: Lists the current reservations
     get:
       operationId: reservations_list
       parameters:
@@ -256,7 +266,6 @@ paths:
                   $ref: '#/components/schemas/Reservation'
           description: ''
   /reservations/{reservation_id}/:
-    summary: View the reservation with the included reservation ID
     get:
       operationId: reservations_retrieve
       parameters:
@@ -361,7 +370,6 @@ paths:
         '204':
           description: No response body
   /reservations/{reservation_id}/cancel/:
-    summary: Cancels the reservation with the included reservation ID
     delete:
       operationId: reservations_cancel_destroy
       parameters:
@@ -380,7 +388,6 @@ paths:
         '204':
           description: No response body
   /reservations/create/:
-    summary: Makes reservation of an accommodation
     post:
       operationId: reservations_create_create
       tags:
@@ -409,7 +416,6 @@ paths:
                 $ref: '#/components/schemas/Reservation'
           description: ''
   /students/create/:
-    summary: Creates student profile
     post:
       operationId: students_create_create
       tags:
@@ -532,6 +538,46 @@ components:
         accommodation_name:
           type: string
           readOnly: true
+    Rating:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        score:
+          type: integer
+          maximum: 5
+          minimum: 1
+        comment:
+          type: string
+          nullable: true
+        photo:
+          type: string
+          format: uri
+          nullable: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+          nullable: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+          nullable: true
+        student:
+          type: integer
+          readOnly: true
+        accommodation:
+          type: integer
+          readOnly: true
+      required:
+      - accommodation
+      - created_at
+      - id
+      - score
+      - student
+      - updated_at
     Reservation:
       type: object
       properties:
