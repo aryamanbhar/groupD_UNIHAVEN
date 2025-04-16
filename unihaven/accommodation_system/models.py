@@ -192,8 +192,8 @@ class Rating(models.Model):
     def __str__(self):
         return f"{self.student.name}'s rating ({self.score}) for {self.accommodation.name}"
 
-# class Notification(models.Model):
-#     student = models.ForeignKey('Student', on_delete=models.CASCADE, default=1)
-#     detail = models.TextField(default='')  # added default
-#     is_read = models.BooleanField(default=False)
-#     cedars_specialist = models.ForeignKey('CedarsSpecialist', on_delete=models.CASCADE, default=1)  # Make sure ID 1 exists!
+class Notification(models.Model):
+    student = models.ForeignKey('Student', on_delete=models.CASCADE, default=1)
+    detail = models.TextField(default='')  # added default
+    is_read = models.BooleanField(default=False)
+    cedars_specialist = models.ForeignKey('CedarsSpecialist', on_delete=models.CASCADE, default=1)  # Make sure ID 1 exists!
