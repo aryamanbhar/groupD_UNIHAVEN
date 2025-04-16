@@ -175,6 +175,7 @@ paths:
                   $ref: '#/components/schemas/Accommodation'
           description: ''
     post:
+      summary: Views details of newly uploaded accommodation
       operationId: accommodations_upload_create
       tags:
       - accommodations
@@ -348,6 +349,7 @@ paths:
           description: ''
   /cedars_specialists/:
     get:
+      summary: Views Cedar Specialists instances
       operationId: cedars_specialists_list
       tags:
       - cedars_specialists
