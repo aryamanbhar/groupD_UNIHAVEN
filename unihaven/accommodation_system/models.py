@@ -4,6 +4,10 @@ import math
 from datetime import date
 from django.db.models import JSONField
 from django.core.validators import MinValueValidator, MaxValueValidator
+from django.core.mail import send_mail
+import smtplib
+import sys
+from email.mime.text import MIMEText
 
 class CedarsSpecialist(models.Model):
     department = models.CharField(max_length=255, default='')  # added default
@@ -87,7 +91,7 @@ class Accommodation(models.Model):
         return self.distance
 
 class Reservation(models.Model):
-    # reservation_id = models.CharField(max_length=255, unique=True, default='')
+    reservation_id = models.CharField(max_length=255, unique=True, default='')
     student = models.ForeignKey(Student, on_delete=models.CASCADE, related_name="reservations", default='')
     accommodation = models.ForeignKey(Accommodation, on_delete=models.CASCADE, related_name="reservations")
     status = models.CharField(
@@ -99,6 +103,59 @@ class Reservation(models.Model):
         default="available",
         max_length=50
     )
+
+    def save(self, *args, **kwargs):
+        if self.accommodation.status:
+            print (f"Accommodation status: {self.accommodation.status}")
+        old_status = self.accommodation.status
+
+        try:
+            print(f"Old status: {old_status}")
+        except Reservation.DoesNotExist:
+            old_status = None
+    
+        if old_status != self.status:
+            print(f"Status changed from {old_status} to {self.status}")
+
+            specialists = CedarsSpecialist.objects.all()
+            email_addresses = [specialist.email for specialist in specialists if specialist.email]
+            print(f"Sending email to: {email_addresses}")
+
+            class SMTPLogger:
+                def write(self, message):
+                    direction = "SERVER -> CLIENT" if message.startswith('reply:') else "CLIENT -> SERVER"
+                    cleaned = message.replace('reply: ', '').replace('send: ', '').strip()
+                    print(f"{direction}: {cleaned}")
+                    sys.stdout.flush()
+
+            debug_logger = SMTPLogger()
+            server = smtplib.SMTP('smtp.gmail.com', 587)
+            server.set_debuglevel(1)
+            server.debugout = debug_logger
+
+            try:
+                server.starttls()
+                server.login('unihavengroupd@gmail.com', 'xlbr whjy hihb njuh')
+                email_addresses_str = ", ".join(email_addresses)
+            
+                msg = MIMEText(f"The reservation {self.reservation_id} for {self.accommodation.name} has changed to {self.status} by student {self.student.student_id}.")
+                msg['Subject'] = f"Reservation Status Changed for {self.accommodation.name}"
+                msg['From'] = 'unihavengroupd@gmail.com'
+                msg['To'] = email_addresses_str
+            
+                server.send_message(msg)
+                print("\n=== Send Successfully ===\n")
+            
+            except Exception as e:
+                print(f"\n!!! Error: {e} !!!\n")
+            finally:
+                server.quit()
+
+                def __str__(self):
+                    return f"Reservation {self.reservation_id}: {self.student.name} - {self.accommodation.name} ({self.status})"
+    
+        super().save(*args, **kwargs)
+    
     def __str__(self):
         return f"Reservation {self.reservation_id}: {self.student.name} - {self.accommodation.name} ({self.status})"
 
@@ -135,8 +192,8 @@ class Rating(models.Model):
     def __str__(self):
         return f"{self.student.name}'s rating ({self.score}) for {self.accommodation.name}"
 
-class Notification(models.Model):
-    student = models.ForeignKey('Student', on_delete=models.CASCADE, default=1)
-    detail = models.TextField(default='')  # added default
-    is_read = models.BooleanField(default=False)
-    cedars_specialist = models.ForeignKey('CedarsSpecialist', on_delete=models.CASCADE, default=1)  # Make sure ID 1 exists!
+# class Notification(models.Model):
+#     student = models.ForeignKey('Student', on_delete=models.CASCADE, default=1)
+#     detail = models.TextField(default='')  # added default
+#     is_read = models.BooleanField(default=False)
+#     cedars_specialist = models.ForeignKey('CedarsSpecialist', on_delete=models.CASCADE, default=1)  # Make sure ID 1 exists!
