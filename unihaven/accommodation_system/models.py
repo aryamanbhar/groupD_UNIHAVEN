@@ -108,10 +108,17 @@ class Contract(models.Model):
     contract_status = models.CharField(max_length=50, default='draft')  # added default
 
 class Rating(models.Model):
-    student = models.ForeignKey('Student', on_delete=models.CASCADE)
-    accommodation = models.ForeignKey('Accommodation', on_delete=models.CASCADE)
+    student = models.ForeignKey(
+        'Student', 
+        on_delete=models.CASCADE,
+        related_name='ratings'
+    )
+    accommodation = models.ForeignKey(
+        'Accommodation',
+        on_delete=models.CASCADE,
+        related_name='ratings'
+    )
     score = models.IntegerField(
-        default=5,
         validators=[
             MinValueValidator(1),
             MaxValueValidator(5)
