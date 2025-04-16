@@ -1,0 +1,563 @@
+openapi: 3.0.3
+info:
+  title: UniHaven API
+  version: 1.0.0
+  description: API for managing accommodations and reservations.
+paths:
+  /accommodations/:
+    get:
+      operationId: accommodations_list
+      tags:
+      - accommodations
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Accommodation'
+          description: ''
+  /accommodations/search/:
+    get:
+      operationId: accommodations_search_list
+      parameters:
+      - in: query
+        name: available_from
+        schema:
+          type: string
+          format: date
+        description: Available From (YYYY-MM-DD)
+      - in: query
+        name: available_to
+        schema:
+          type: string
+          format: date
+        description: Available To (YYYY-MM-DD)
+      - in: query
+        name: campus
+        schema:
+          type: string
+        description: Distance To HKU Campus (Ascending Order)
+      - in: query
+        name: max_price
+        schema:
+          type: number
+      - in: query
+        name: min_price
+        schema:
+          type: number
+      - in: query
+        name: number_of_bedrooms
+        schema:
+          type: integer
+      - in: query
+        name: number_of_beds
+        schema:
+          type: integer
+      - name: ordering
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
+      - name: search
+        required: false
+        in: query
+        description: A search term.
+        schema:
+          type: string
+      - in: query
+        name: type
+        schema:
+          type: string
+      tags:
+      - accommodations
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Accommodation'
+          description: ''
+  /accommodations/search/{name}/:
+    get:
+      operationId: accommodations_search_retrieve
+      parameters:
+      - in: path
+        name: name
+        schema:
+          type: string
+        required: true
+      tags:
+      - accommodations
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Accommodation'
+          description: ''
+  /accommodations/upload/:
+    get:
+      operationId: accommodations_upload_list
+      tags:
+      - accommodations
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Accommodation'
+          description: ''
+    post:
+      operationId: accommodations_upload_create
+      tags:
+      - accommodations
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Accommodation'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Accommodation'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Accommodation'
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Accommodation'
+          description: ''
+  /cedars_specialists/:
+    get:
+      operationId: cedars_specialists_list
+      tags:
+      - cedars_specialists
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/CedarsSpecialist'
+          description: ''
+  /cedars_specialists/create/:
+    post:
+      operationId: cedars_specialists_create_create
+      tags:
+      - cedars_specialists
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CedarsSpecialist'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/CedarsSpecialist'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/CedarsSpecialist'
+        required: true
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CedarsSpecialist'
+          description: ''
+  /reservations/:
+    get:
+      operationId: reservations_list
+      parameters:
+      - in: query
+        name: status
+        schema:
+          type: string
+          enum:
+          - available
+          - cancelled
+          - reserved
+        description: |-
+          * `available` - Available
+          * `reserved` - Reserved
+          * `cancelled` - Cancelled
+      - in: query
+        name: student
+        schema:
+          type: integer
+      tags:
+      - reservations
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Reservation'
+          description: ''
+  /reservations/{reservation_id}/:
+    get:
+      operationId: reservations_retrieve
+      parameters:
+      - in: path
+        name: reservation_id
+        schema:
+          type: string
+        required: true
+      tags:
+      - reservations
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Reservation'
+          description: ''
+    put:
+      operationId: reservations_update
+      parameters:
+      - in: path
+        name: reservation_id
+        schema:
+          type: string
+        required: true
+      tags:
+      - reservations
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Reservation'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Reservation'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Reservation'
+        required: true
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Reservation'
+          description: ''
+    patch:
+      operationId: reservations_partial_update
+      parameters:
+      - in: path
+        name: reservation_id
+        schema:
+          type: string
+        required: true
+      tags:
+      - reservations
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedReservation'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedReservation'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedReservation'
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Reservation'
+          description: ''
+    delete:
+      operationId: reservations_destroy
+      parameters:
+      - in: path
+        name: reservation_id
+        schema:
+          type: string
+        required: true
+      tags:
+      - reservations
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '204':
+          description: No response body
+  /reservations/{reservation_id}/cancel/:
+    delete:
+      operationId: reservations_cancel_destroy
+      parameters:
+      - in: path
+        name: reservation_id
+        schema:
+          type: string
+        required: true
+      tags:
+      - reservations
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '204':
+          description: No response body
+  /reservations/create/:
+    post:
+      operationId: reservations_create_create
+      tags:
+      - reservations
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Reservation'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Reservation'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Reservation'
+        required: true
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Reservation'
+          description: ''
+  /students/create/:
+    post:
+      operationId: students_create_create
+      tags:
+      - students
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Student'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Student'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Student'
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Student'
+          description: ''
+components:
+  schemas:
+    Accommodation:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        name:
+          type: string
+          maxLength: 255
+        image:
+          type: string
+          format: uri
+          nullable: true
+        type:
+          type: string
+          maxLength: 100
+        owner_info:
+          type: string
+        longitude:
+          type: number
+          format: double
+        latitude:
+          type: number
+          format: double
+        area:
+          type: string
+          maxLength: 100
+        distance: {}
+        price:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,8}(?:\.\d{0,2})?$
+        number_of_beds:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: -9223372036854775808
+          format: int64
+        number_of_bedrooms:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: -9223372036854775808
+          format: int64
+        availability_start:
+          type: string
+          format: date
+        availability_end:
+          type: string
+          format: date
+        create_date:
+          type: string
+          format: date-time
+          readOnly: true
+        status:
+          $ref: '#/components/schemas/AccommodationStatusEnum'
+      required:
+      - create_date
+      - id
+    AccommodationStatusEnum:
+      enum:
+      - available
+      - reserved
+      type: string
+      description: |-
+        * `available` - Available
+        * `reserved` - Reserved
+    CedarsSpecialist:
+      type: object
+      properties:
+        email:
+          type: string
+          format: email
+          maxLength: 254
+        cedars_specialist_id:
+          type: integer
+          readOnly: true
+      required:
+      - cedars_specialist_id
+      - email
+    PatchedReservation:
+      type: object
+      properties:
+        student_id:
+          type: integer
+          writeOnly: true
+        accommodation:
+          type: integer
+          writeOnly: true
+        status:
+          allOf:
+          - $ref: '#/components/schemas/ReservationStatusEnum'
+          readOnly: true
+        accommodation_name:
+          type: string
+          readOnly: true
+    Reservation:
+      type: object
+      properties:
+        student_id:
+          type: integer
+          writeOnly: true
+        accommodation:
+          type: integer
+          writeOnly: true
+        status:
+          allOf:
+          - $ref: '#/components/schemas/ReservationStatusEnum'
+          readOnly: true
+        accommodation_name:
+          type: string
+          readOnly: true
+      required:
+      - accommodation
+      - accommodation_name
+      - status
+      - student_id
+    ReservationStatusEnum:
+      enum:
+      - available
+      - reserved
+      - cancelled
+      type: string
+      description: |-
+        * `available` - Available
+        * `reserved` - Reserved
+        * `cancelled` - Cancelled
+    Student:
+      type: object
+      properties:
+        student_id:
+          type: string
+          maxLength: 255
+        name:
+          type: string
+          maxLength: 255
+        degree_type:
+          type: string
+          maxLength: 100
+  securitySchemes:
+    basicAuth:
+      type: http
+      scheme: basic
+    cookieAuth:
+      type: apiKey
+      in: cookie
+      name: sessionid
