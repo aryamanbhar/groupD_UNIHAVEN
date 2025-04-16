@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from .models import (
     CedarsSpecialist, Accommodation, Student, Reservation,
-    Contract, Rating, Notification
+    Contract, Rating
 )
 
 # class UserSerializer(serializers.ModelSerializer):
