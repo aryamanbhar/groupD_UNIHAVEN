@@ -3,9 +3,21 @@ info:
   title: UniHaven API
   version: 1.0.0
   description: API for managing accommodations and reservations.
+
+tags:
+   - name: accommodations
+     description: Manage accommodation listings, uploads, and search operations.
+   - name: reservations
+     description: Handle booking creation, cancellation, and retrieval.
+   - name: students
+     description: Manage student profiles and creation.
+   - name: cedars_specialists
+     description: Manage Cedars Specialists and their details.
+
 paths:
   /accommodations/:
     get:
+      summary: Lists the accommodations
       operationId: accommodations_list
       tags:
       - accommodations
@@ -24,6 +36,7 @@ paths:
           description: ''
   /accommodations/rate/:
     post:
+      summary: Rates the accommodations
       operationId: accommodations_rate_create
       tags:
       - accommodations
@@ -52,6 +65,7 @@ paths:
           description: ''
   /accommodations/search/:
     get:
+      summary: Apply filters to accommodation searches
       operationId: accommodations_search_list
       parameters:
       - in: query
@@ -120,6 +134,7 @@ paths:
           description: ''
   /accommodations/search/{name}/:
     get:
+      summary: Searches the accommodation with the included name
       operationId: accommodations_search_retrieve
       parameters:
       - in: path
@@ -142,6 +157,7 @@ paths:
           description: ''
   /accommodations/upload/:
     get:
+      summary: Uploads a new accommodation listing
       operationId: accommodations_upload_list
       tags:
       - accommodations
@@ -159,6 +175,7 @@ paths:
                   $ref: '#/components/schemas/Accommodation'
           description: ''
     post:
+      summary: Views details of newly uploaded accommodation
       operationId: accommodations_upload_create
       tags:
       - accommodations
@@ -332,6 +349,7 @@ paths:
           description: ''
   /cedars_specialists/:
     get:
+      summary: Views Cedar Specialists instances
       operationId: cedars_specialists_list
       tags:
       - cedars_specialists
@@ -350,6 +368,7 @@ paths:
           description: ''
   /cedars_specialists/create/:
     post:
+      summary: Creates Cedars Specialist profile
       operationId: cedars_specialists_create_create
       tags:
       - cedars_specialists
@@ -378,6 +397,7 @@ paths:
           description: ''
   /reservations/:
     get:
+      summary: Lists the current reservations
       operationId: reservations_list
       parameters:
       - in: query
@@ -413,6 +433,7 @@ paths:
           description: ''
   /reservations/{reservation_id}/:
     get:
+      summary: View the reservation with the included reservation ID
       operationId: reservations_retrieve
       parameters:
       - in: path
@@ -517,6 +538,7 @@ paths:
           description: No response body
   /reservations/{reservation_id}/cancel/:
     delete:
+      summary: Cancels the reservation with the included reservation ID
       operationId: reservations_cancel_destroy
       parameters:
       - in: path
@@ -535,6 +557,7 @@ paths:
           description: No response body
   /reservations/create/:
     post:
+      summary: Makes reservation of an accommodation
       operationId: reservations_create_create
       tags:
       - reservations
@@ -563,6 +586,7 @@ paths:
           description: ''
   /students/create/:
     post:
+      summary: Creates student profile
       operationId: students_create_create
       tags:
       - students
