@@ -487,38 +487,6 @@ paths:
               schema:
                 $ref: '#/components/schemas/Reservation'
           description: ''
-    patch:
-      operationId: reservations_partial_update
-      parameters:
-      - in: path
-        name: reservation_id
-        schema:
-          type: string
-        required: true
-      tags:
-      - reservations
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/PatchedReservation'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/PatchedReservation'
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/PatchedReservation'
-      security:
-      - cookieAuth: []
-      - basicAuth: []
-      - {}
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Reservation'
-          description: ''
     delete:
       operationId: reservations_destroy
       parameters:
