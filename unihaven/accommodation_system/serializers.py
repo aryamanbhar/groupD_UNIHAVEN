@@ -101,13 +101,12 @@ class ContractSerializer(serializers.ModelSerializer):
         fields = ["id", "reservation", "date", "document", "signed_at", "contract_status"]
 
 class RatingSerializer(serializers.ModelSerializer):
-    student = StudentSerializer(read_only=True)
-    accommodation = AccommodationSerializer(read_only=True)
+    score = serializers.IntegerField(min_value=1, max_value=5)  # 显式声明数值范围
     
     class Meta:
         model = Rating
-        fields = ["id", "student", "accommodation", "score", "comment", "photo", "created_at", "updated_at"]
-        read_only_fields = ["student", "accommodation", "created_at"]
+        fields = "__all__"
+        read_only_fields = ('student', 'accommodation', 'created_at', 'updated_at')
         
 # class NotificationSerializer(serializers.ModelSerializer):
 #     user = UserSerializer()
