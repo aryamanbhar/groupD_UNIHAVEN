@@ -3,9 +3,22 @@ info:
   title: UniHaven API
   version: 1.0.0
   description: API for managing accommodations and reservations.
+
+tags:
+  - name: accommodations
+    description: Manage accommodation listings, uploads, and search operations.
+  - name: reservations
+    description: Handle booking creation, cancellation, and retrieval.
+  - name: students
+    description: Manage student profiles and creation.
+  - name: cedars_specialists
+    description: Manage Cedars Specialists and their details.
+
+
 paths:
   /accommodations/:
     get:
+      summary: Lists the accommodations
       operationId: accommodations_list
       tags:
       - accommodations
@@ -24,6 +37,7 @@ paths:
           description: ''
   /accommodations/search/:
     get:
+      summary: Apply filters to accommodation searches
       operationId: accommodations_search_list
       parameters:
       - in: query
@@ -113,6 +127,7 @@ paths:
                 $ref: '#/components/schemas/Accommodation'
           description: ''
   /accommodations/upload/:
+    summary: Uploads a new accommodation listing
     get:
       operationId: accommodations_upload_list
       tags:
@@ -157,6 +172,7 @@ paths:
                 $ref: '#/components/schemas/Accommodation'
           description: ''
   /cedars_specialists/:
+
     get:
       operationId: cedars_specialists_list
       tags:
@@ -175,6 +191,7 @@ paths:
                   $ref: '#/components/schemas/CedarsSpecialist'
           description: ''
   /cedars_specialists/create/:
+    summary: Creates Cedars Specialist profile
     post:
       operationId: cedars_specialists_create_create
       tags:
@@ -203,6 +220,7 @@ paths:
                 $ref: '#/components/schemas/CedarsSpecialist'
           description: ''
   /reservations/:
+    summary: Lists the current reservations
     get:
       operationId: reservations_list
       parameters:
@@ -238,6 +256,7 @@ paths:
                   $ref: '#/components/schemas/Reservation'
           description: ''
   /reservations/{reservation_id}/:
+    summary: View the reservation with the included reservation ID
     get:
       operationId: reservations_retrieve
       parameters:
@@ -342,6 +361,7 @@ paths:
         '204':
           description: No response body
   /reservations/{reservation_id}/cancel/:
+    summary: Cancels the reservation with the included reservation ID
     delete:
       operationId: reservations_cancel_destroy
       parameters:
@@ -360,6 +380,7 @@ paths:
         '204':
           description: No response body
   /reservations/create/:
+    summary: Makes reservation of an accommodation
     post:
       operationId: reservations_create_create
       tags:
@@ -388,6 +409,7 @@ paths:
                 $ref: '#/components/schemas/Reservation'
           description: ''
   /students/create/:
+    summary: Creates student profile
     post:
       operationId: students_create_create
       tags:
