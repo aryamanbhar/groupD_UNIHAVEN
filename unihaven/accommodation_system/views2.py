@@ -30,31 +30,6 @@ class AccommodationUpload(generics.ListCreateAPIView):
     queryset = Accommodation.objects.all()
     serializer_class = AccommodationSerializer
 
-
-# class AccommodationSearch(generics.ListAPIView):
-#     queryset = Accommodation.objects.all()
-#     serializer_class = AccommodationSerializer
-#     filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
-#     filterset_fields = ["name"]
-#     search_fields = ["name", "type"]
-#     ordering_fields = ["distance"]
-
-#     def get_queryset(self):
-#         queryset = Accommodation.objects.all()
-#         user_lat = self.request.query_params.get('latitude')
-#         user_lng = self.request.query_params.get('longitude')
-
-#         if user_lat and user_lng:
-#             # Annotate each accommodation with dynamic distance
-#             for acc in queryset:
-#                 acc.distance = acc.calculate_distance(float(user_lat), float(user_lng))
-            
-#             # Sort if requested (?ordering=distance)
-#             if self.request.query_params.get('ordering') == 'distance':
-#                 queryset = sorted(queryset, key=lambda x: x.distance)
-
-#         return queryset
-
 class AccommodationSearch(generics.ListAPIView):
     serializer_class = AccommodationSerializer
     filterset_class = AccommodationFilter
@@ -66,8 +41,6 @@ class AccommodationSearch(generics.ListAPIView):
     def get_queryset(self):
         # queryset = Accommodation.objects.all()
         return Accommodation.objects.filter(status="available")
-
-        return queryset
 
 
 class AccommodationDetail(generics.RetrieveAPIView):
@@ -108,33 +81,51 @@ class ReservationCreateView(generics.ListCreateAPIView):
     def perform_create(self, serializer):
         # All validation is handled in the serializer
         serializer.save()
+    
 
+class ReservationCancelView(generics.DestroyAPIView):
+    queryset = Reservation.objects.all()
+    serializer_class = ReservationSerializer
+    lookup_field = 'reservation_id'
+
+    def perform_destroy(self, instance):
+        if instance.status == "cancelled":
+            raise ValidationError({"detail": "This reservation has already been cancelled."})
         
-        # Extract student and accommodation from validated data
-        # student_id = serializer.validated_data.get("student_id")
-        # accommodation = serializer.validated_data.get("accommodation")
+        instance.status = "cancelled"
+        instance.save()
 
-        # # Ensure the student exists
-        # try:
-        #     student = Student.objects.get(id=student_id)
-        # except Student.DoesNotExist:
-        #     raise ValidationError({"student_id": "Student does not exist."})
+        accommodation = instance.accommodation
+        accommodation.status = "available"
+        accommodation.save()
 
-        # # Ensure the accommodation is available
-        # if accommodation.status != "available":
-        #     raise ValidationError({"accommodation": "This accommodation is not available for reservation."})
-    
-        # if Reservation.objects.filter(accommodation=accommodation).exists():
-        #     raise ValidationError({"accommodation": "This accommodation already has a reservation."})
+        instance.delete()
 
 
-        # # Update the accommodation status to "reserved"
-        # accommodation.status = "reserved"
-        # accommodation.save()
 
-        # # Save the reservation with the student and accommodation
-        # serializer.save(student=student_id, accommodation=accommodation)
-    
+class ReservationListView(generics.ListAPIView):
+    queryset = Reservation.objects.all()
+    serializer_class = ReservationSerializer
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ["status", "student"]
+
+class ReservationCreateView(generics.CreateAPIView):
+    queryset = Reservation.objects.all()
+    serializer_class = ReservationSerializer
+
+    def perform_create(self, serializer): 
+        student_id = serializer.validated_data.get("student_id")
+        # student = Student.objects.get_or_create(id=student_id)
+
+        student, created = Student.objects.get_or_create(id=student_id)
+        # student_id = serializer.validated_data.pop("student_id")
+        # student = get_object_or_404(Student, id=student_id) 
+
+        # accommodation_id = serializer.validated_data["accommodation"].id
+        # accommodation = get_object_or_404(Accommodation, pk=accommodation_id)
+        accommodation = serializer.validated_data.get("accommodation")
+        serializer.save(student=student, accommodation=accommodation)
+
 
 class ReservationCancelView(generics.DestroyAPIView):
     queryset = Reservation.objects.all()
@@ -188,56 +179,7 @@ class RatingRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
             raise PermissionDenied("You can only modify your own ratings")
         return rating
 
-class AccommodationListView(generics.ListAPIView):
-    queryset = Accommodation.objects.all()
-    serializer_class = AccommodationSerializer
-    filter_backends = [DjangoFilterBackend, filters.OrderingFilter, filters.SearchFilter]
-    filterset_fields = ["type", "status", "price", "number_of_beds"]
-    ordering_fields = ["price", "distance"]
-    search_fields = ["name", "owner_info"]
 
-
-class ReservationListView(generics.ListAPIView):
-    queryset = Reservation.objects.all()
-    serializer_class = ReservationSerializer
-    filter_backends = [DjangoFilterBackend]
-    filterset_fields = ["status", "student"]
-
-class ReservationCreateView(generics.CreateAPIView):
-    queryset = Reservation.objects.all()
-    serializer_class = ReservationSerializer
-
-    def perform_create(self, serializer): 
-        student_id = serializer.validated_data.get("student_id")
-        # student = Student.objects.get_or_create(id=student_id)
-
-        student, created = Student.objects.get_or_create(id=student_id)
-        # student_id = serializer.validated_data.pop("student_id")
-        # student = get_object_or_404(Student, id=student_id) 
-
-        # accommodation_id = serializer.validated_data["accommodation"].id
-        # accommodation = get_object_or_404(Accommodation, pk=accommodation_id)
-        accommodation = serializer.validated_data.get("accommodation")
-        serializer.save(student=student, accommodation=accommodation)
-
-
-class ReservationCancelView(generics.DestroyAPIView):
-    queryset = Reservation.objects.all()
-    serializer_class = ReservationSerializer
-    lookup_field = 'reservation_id'
-
-    def perform_destroy(self, instance):
-        if instance.status == "cancelled":
-            raise ValidationError({"detail": "This reservation has already been cancelled."})
-        
-        instance.status = "cancelled"
-        instance.save()
-
-        accommodation = instance.accommodation
-        accommodation.status = "available"
-        accommodation.save()
-
-        instance.delete()
 
 class RatingListView(generics.ListAPIView):
     queryset = Rating.objects.all()
@@ -245,20 +187,6 @@ class RatingListView(generics.ListAPIView):
     filter_backends = [DjangoFilterBackend]
     filterset_fields = ["score", "student", "accommodation"]
         
-
-
-
-
-
-
-
-# class UserListCreateView(generics.ListCreateAPIView):
-#     queryset = User.objects.all()
-#     serializer_class = UserSerializer
-
-# class UserRetrieveUpdateDeleteView(generics.RetrieveUpdateDestroyAPIView):
-#     queryset = User.objects.all()
-#     serializer_class = UserSerializer
 
 
 
