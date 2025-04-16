@@ -151,7 +151,17 @@ class RatingListView(generics.ListAPIView):
     filter_backends = [DjangoFilterBackend]
     filterset_fields = ["score", "student", "accommodation"]
 
+from django.shortcuts import get_object_or_404
+from django.http import JsonResponse
+from .models import Contract
 
+def update_contract_status(request, contract_id):
+
+    contract = get_object_or_404(Contract, pk=contract_id)
+
+    contract.contract_status = 'failed'
+    contract.save()  
+    return JsonResponse({'success': f'Contract {contract_id} status updated to failed.'})
 
 class StudentCreateView(generics.CreateAPIView):
     queryset = Student.objects.all()
