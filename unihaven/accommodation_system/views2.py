@@ -265,3 +265,12 @@ class RatingListView(generics.ListAPIView):
 class StudentCreateView(generics.CreateAPIView):
     queryset = Student.objects.all()
     serializer_class = StudentSerializer
+
+
+class CedarsSpecialistCreateView(generics.CreateAPIView):
+    queryset = CedarsSpecialist.objects.all()
+    serializer_class = CedarsSpecialistSerializer
+
+class CedarsSpecialistListView(generics.ListAPIView):
+    queryset = CedarsSpecialist.objects.all()
+    serializer_class = CedarsSpecialistSerializer
