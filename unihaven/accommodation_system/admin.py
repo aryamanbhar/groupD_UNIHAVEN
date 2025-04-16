@@ -8,6 +8,6 @@ admin.site.register(Reservation)
 admin.site.register(Student)
 admin.site.register(Rating)
 admin.site.register(CedarsSpecialist)
-admin.site.register(Notification)
+# admin.site.register(Notification)
 admin.site.register(Contract)
 

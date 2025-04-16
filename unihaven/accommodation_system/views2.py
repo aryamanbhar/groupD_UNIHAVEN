@@ -11,7 +11,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.exceptions import PermissionDenied
 from .models import (
     CedarsSpecialist, Accommodation, Reservation,
-    Contract, Rating, Notification, Student
+    Contract, Rating, Student
 )
 from .serializers import (
     CedarsSpecialistSerializer, AccommodationSerializer, StudentSerializer,

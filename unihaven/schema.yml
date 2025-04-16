@@ -22,6 +22,34 @@ paths:
                 items:
                   $ref: '#/components/schemas/Accommodation'
           description: ''
+  /accommodations/rate/:
+    post:
+      operationId: accommodations_rate_create
+      tags:
+      - accommodations
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Rating'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Rating'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Rating'
+        required: true
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Rating'
+          description: ''
   /accommodations/search/:
     get:
       operationId: accommodations_search_list
@@ -510,6 +538,46 @@ components:
         accommodation_name:
           type: string
           readOnly: true
+    Rating:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        score:
+          type: integer
+          maximum: 5
+          minimum: 1
+        comment:
+          type: string
+          nullable: true
+        photo:
+          type: string
+          format: uri
+          nullable: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+          nullable: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+          nullable: true
+        student:
+          type: integer
+          readOnly: true
+        accommodation:
+          type: integer
+          readOnly: true
+      required:
+      - accommodation
+      - created_at
+      - id
+      - score
+      - student
+      - updated_at
     Reservation:
       type: object
       properties:
