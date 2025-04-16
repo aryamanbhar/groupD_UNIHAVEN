@@ -64,6 +64,7 @@ class AccommodationRetrieveUpdateDeleteView(generics.RetrieveUpdateDestroyAPIVie
 
 
 
+
 #RESERVATION
 class ReservationListView(generics.ListAPIView):
     queryset = Reservation.objects.all()
@@ -73,35 +74,6 @@ class ReservationDetailView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Reservation.objects.all()
     serializer_class = ReservationSerializer
     lookup_field = 'id'
-
-class ReservationCreateView(generics.ListCreateAPIView):
-    queryset = Reservation.objects.all()
-    serializer_class = ReservationSerializer
-
-    def perform_create(self, serializer):
-        # All validation is handled in the serializer
-        serializer.save()
-    
-
-class ReservationCancelView(generics.DestroyAPIView):
-    queryset = Reservation.objects.all()
-    serializer_class = ReservationSerializer
-    lookup_field = 'reservation_id'
-
-    def perform_destroy(self, instance):
-        if instance.status == "cancelled":
-            raise ValidationError({"detail": "This reservation has already been cancelled."})
-        
-        instance.status = "cancelled"
-        instance.save()
-
-        accommodation = instance.accommodation
-        accommodation.status = "available"
-        accommodation.save()
-
-        instance.delete()
-
-
 
 class ReservationListView(generics.ListAPIView):
     queryset = Reservation.objects.all()
@@ -115,14 +87,7 @@ class ReservationCreateView(generics.CreateAPIView):
 
     def perform_create(self, serializer): 
         student_id = serializer.validated_data.get("student_id")
-        # student = Student.objects.get_or_create(id=student_id)
-
         student, created = Student.objects.get_or_create(id=student_id)
-        # student_id = serializer.validated_data.pop("student_id")
-        # student = get_object_or_404(Student, id=student_id) 
-
-        # accommodation_id = serializer.validated_data["accommodation"].id
-        # accommodation = get_object_or_404(Accommodation, pk=accommodation_id)
         accommodation = serializer.validated_data.get("accommodation")
         serializer.save(student=student, accommodation=accommodation)
 
@@ -186,7 +151,6 @@ class RatingListView(generics.ListAPIView):
     serializer_class = RatingSerializer
     filter_backends = [DjangoFilterBackend]
     filterset_fields = ["score", "student", "accommodation"]
-        
 
 
 
