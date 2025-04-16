@@ -12,7 +12,7 @@ from .models import (
 class CedarsSpecialistSerializer(serializers.ModelSerializer):
     class Meta:
         model = CedarsSpecialist
-        fields = ["id", "department"]
+        fields = ["email","cedars_specialist_id"]
 
 class AccommodationSerializer(serializers.ModelSerializer):
     # cedars_specialist = CedarsSpecialistSerializer()
