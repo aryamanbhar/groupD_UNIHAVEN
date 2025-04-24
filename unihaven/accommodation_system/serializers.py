@@ -77,7 +77,7 @@ class ReservationSerializer(serializers.ModelSerializer):
             )
 
         # Check if accommodation already has a reservation
-        if Reservation.objects.filter(accommodation=accommodation_name).exists():
+        if Reservation.objects.filter(accommodation=accommodation_name, status="reserved").exists():
             raise serializers.ValidationError(
                 {"accommodation": "This accommodation is already reserved by another student."}
             )

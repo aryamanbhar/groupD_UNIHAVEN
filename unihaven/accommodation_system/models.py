@@ -93,7 +93,7 @@ class Accommodation(models.Model):
 
 class Reservation(models.Model):
     student = models.ForeignKey(Student, on_delete=models.CASCADE, related_name="reservations", default='')
-    accommodation = models.ForeignKey(Accommodation, on_delete=models.CASCADE, related_name="reservations")
+    accommodation = models.ForeignKey(Accommodation, on_delete=models.CASCADE, related_name="reservations", unique=True)
     status = models.CharField(
         choices=[
             ("available", "Available"),
