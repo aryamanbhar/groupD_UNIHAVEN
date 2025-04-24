@@ -92,7 +92,6 @@ class Accommodation(models.Model):
         return self.distance
 
 class Reservation(models.Model):
-    reservation_id = models.AutoField(primary_key=True)
     student = models.ForeignKey(Student, on_delete=models.CASCADE, related_name="reservations", default='')
     accommodation = models.ForeignKey(Accommodation, on_delete=models.CASCADE, related_name="reservations")
     status = models.CharField(
