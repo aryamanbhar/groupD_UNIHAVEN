@@ -1,7 +1,8 @@
 from django.urls import path
 from .views2 import (
  AccommodationDetail, AccommodationSearch, AccommodationUpload, AccommodationsViewAll, AccommodationRetrieveUpdateDeleteView, ReservationCancelView, 
- ReservationCreateView, ReservationListView, ReservationDetailView, StudentCreateView, CedarsSpecialistCreateView, CedarsSpecialistListView, RatingCreateView, update_contract_status
+ ReservationCreateView, ReservationListView, ReservationDetailView, StudentCreateView, CedarsSpecialistCreateView, CedarsSpecialistListView, RatingCreateView, update_contract_status,
+ StudentListView
 )
 from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView, SpectacularRedocView
 
@@ -16,6 +17,7 @@ urlpatterns = [
     path("reservations/<int:reservation_id>/", ReservationDetailView.as_view(), name="reservation-detail"),
     path("reservations/", ReservationListView.as_view(), name="reservation-list"),
     path("students/create/", StudentCreateView.as_view(), name="student-create"),
+    path('students/', StudentListView.as_view(), name='student-list'),
     path("cedars_specialists/create/", CedarsSpecialistCreateView.as_view(), name="cedars-specialist-create"),
     path("cedars_specialists/", CedarsSpecialistListView.as_view(), name="cedars-specialist-list"),
     path('contracts/<int:contract_id>/update-status/', update_contract_status, name='update_contract_status'),
