@@ -87,23 +87,17 @@ class ReservationCreateView(generics.CreateAPIView):
         serializer.save()
 
 
-class ReservationDetailView(generics.RetrieveUpdateDestroyAPIView):
-    queryset = Reservation.objects.all()
-    serializer_class = ReservationSerializer
-    lookup_field = 'id'
-
-
 class ReservationCancelView(generics.DestroyAPIView):
-    queryset = Reservation.objects.all()
-    serializer_class = ReservationSerializer
-    lookup_url_kwarg = 'reservation_id'
-    # lookup_field = 'reservation_id'
+    def delete(self, request, student_id):
+        # Find the student's reservation
+        try:
+            reservation = Reservation.objects.get(student__student_id=student_id)
+        except Reservation.DoesNotExist:
+            return Response({"error": "Reservation not found."}, status=status.HTTP_404_NOT_FOUND)
 
-    def update(self, request, *args, **kwargs):
-         reservation = self.get_object()
-         reservation.status = 'cancelled'
-         reservation.save()
-         return Response({'status': 'cancelled'}, status=status.HTTP_200_OK)
+        # Delete the reservation
+        reservation.delete()
+        return Response({"message": "Reservation cancelled successfully."}, status=status.HTTP_204_NO_CONTENT)
 
 
 #RATINGS
