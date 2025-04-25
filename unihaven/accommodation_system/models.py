@@ -112,10 +112,9 @@ class Reservation(models.Model):
         
         self.accommodation.save()
         super().save(*args, **kwargs)
-        super().save(*args, **kwargs)
     
     def __str__(self):
-        return f"Reservation {self.reservation_id}: {self.student.name} - {self.accommodation.name} ({self.status})"
+        return f"Reservation {self.id}: {self.student.name} - {self.accommodation.name} ({self.status})"
 
 class Contract(models.Model):
     contract_id = models.AutoField(primary_key=True)
@@ -156,7 +155,7 @@ class Contract(models.Model):
         return self.contract_status == 'failed'
 
     def __str__(self):
-        return f"Contract for Reservation {self.reservation.reservation_id} - Status: {self.contract_status}"
+        return f"Contract for Reservation {self.reservation.student} - Status: {self.contract_status}"
 
 class Rating(models.Model):
         student = models.ForeignKey(

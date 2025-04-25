@@ -67,48 +67,43 @@ class AccommodationRetrieveUpdateDeleteView(generics.RetrieveUpdateDestroyAPIVie
 
 #RESERVATION
 
-class ReservationListView(generics.ListAPIView):
+class ReservationCedarsListView(generics.ListAPIView):
     queryset = Reservation.objects.all()
     serializer_class = ReservationSerializer
+
+
+class ReservationStudentView(generics.ListAPIView):
+    serializer_class = ReservationSerializer
+    def get_queryset(self):
+        student_id = self.kwargs["student_id"]
+        return Reservation.objects.filter(student__student_id=student_id)
+
 
 class ReservationCreateView(generics.CreateAPIView):
     queryset = Reservation.objects.all()
     serializer_class = ReservationSerializer
 
-    def perform_create(self, serializer): 
-        student_id = serializer.validated_data.get("student_id")
-
-        student, created = Student.objects.get_or_create(id=student_id)
-        accommodation = serializer.validated_data.get("accommodation")
-        serializer.save(student=student, accommodation=accommodation)
+    def perform_create(self, serializer):
+        serializer.save()
 
 
 class ReservationDetailView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Reservation.objects.all()
     serializer_class = ReservationSerializer
-    lookup_field = 'reservation_id'
+    lookup_field = 'id'
 
 
 class ReservationCancelView(generics.DestroyAPIView):
     queryset = Reservation.objects.all()
     serializer_class = ReservationSerializer
-    lookup_field = 'reservation_id'
+    lookup_url_kwarg = 'reservation_id'
+    # lookup_field = 'reservation_id'
 
-    def perform_destroy(self, instance):
-        if instance.status == "cancelled":
-            raise ValidationError({"detail": "This reservation has already been cancelled."})
-        
-        instance.status = "cancelled"
-        instance.save()
-
-        accommodation = instance.accommodation
-        accommodation.status = "available"
-        accommodation.save()
-
-        instance.delete()
-
-
-
+    def update(self, request, *args, **kwargs):
+         reservation = self.get_object()
+         reservation.status = 'cancelled'
+         reservation.save()
+         return Response({'status': 'cancelled'}, status=status.HTTP_200_OK)
 
 
 #RATINGS
