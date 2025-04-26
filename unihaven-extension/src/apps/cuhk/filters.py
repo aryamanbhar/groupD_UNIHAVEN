@@ -20,7 +20,7 @@ class AccommodationFilter(django_filters.FilterSet):
 
     campus = django_filters.CharFilter(
         method='filter_by_campus',
-        label='Distance To HKU Campus (Ascending Order)'
+        label='Distance To CUHK Campus (Ascending Order)'
     )
 
 
@@ -64,17 +64,13 @@ class AccommodationFilter(django_filters.FilterSet):
         return queryset
 
     def filter_by_campus(self, queryset, name, value):
-        HKU_CAMPUSES = {
+        CUHK_CAMPUSES = {
             "Main Campus": "Main Campus",
-            "Sassoon Road Campus": "Sassoon Road Campus",
-            "Swire Institute of Marine Science": "Swire Institute of Marine Science",
-            "Kadoorie Centre": "Kadoorie Centre",
-            "Faculty of Dentistry": "Faculty of Dentistry",
         }
 
         # Check if the selected campus is valid
-        if value in HKU_CAMPUSES:
-            campus_name = HKU_CAMPUSES[value]
+        if value in CUHK_CAMPUSES:
+            campus_name = CUHK_CAMPUSES[value]
 
             # Filter and sort accommodations in Python
             def extract_distance(accommodation):
@@ -110,4 +106,3 @@ class AccommodationFilter(django_filters.FilterSet):
         return queryset
         
         
-        return queryset
