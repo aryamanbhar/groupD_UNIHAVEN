@@ -31,16 +31,22 @@ class AccommodationUpload(generics.ListCreateAPIView):
     serializer_class = AccommodationSerializer
 
 class AccommodationSearch(generics.ListAPIView):
+    queryset = Accommodation.objects.all()
     serializer_class = AccommodationSerializer
     filterset_class = AccommodationFilter
     filter_backends = [filters.SearchFilter, DjangoFilterBackend, filters.OrderingFilter]
+    filterset_fields = ["name", "number_of_beds", "number_of_bedrooms", "availability_start", "availability_end", "price", "distance"]
     search_fields = ["type", "name"]
-    # ordering_fields = ["type", "number_of_beds", "number_of_bedrooms", "Main Campus", "Sassoon Road Campus", "Swire Institute of Marine Science", "Kadoorie Centre", "Faculty of Dentistry", "availability_start", "availability_end", "price"]
-    ordering_fields = ["type", "number_of_beds", "number_of_bedrooms", "availability_start", "availability_end", "price", "distance"]
+    ordering_fields = ["distance"]
+    # ordering_fields = ["type", "number_of_beds", "number_of_bedrooms", "availability_start", "availability_end", "price", "distance"]
 
     def get_queryset(self):
-        # queryset = Accommodation.objects.all()
-        return Accommodation.objects.filter(status="available")
+        queryset = Accommodation.objects.filter(status="available")
+
+        if not self.request.query_params.get('ordering'):
+            queryset = queryset.order_by('distance')  # Default: ascending
+        
+        return queryset
 
 
 class AccommodationDetail(generics.RetrieveAPIView):
@@ -101,8 +107,6 @@ class ReservationCancelView(generics.DestroyAPIView):
 
 
 #RATINGS
-
-
 
 class RatingCreateView(generics.CreateAPIView):
     queryset = Rating.objects.all()
