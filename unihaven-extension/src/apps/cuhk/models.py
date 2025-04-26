@@ -20,7 +20,72 @@ class Student(models.Model):
     degree_type = models.CharField(max_length=100, default='')  # added default
     
 class Accommodation(models.Model):
-    property_id = models.CharField(max_length=255, unique=True, default='')
+    property_id = models.AutoField(primary_key=True)  # Automatically incremented integer
+    image = models.ImageField(upload_to='accommodation_images/', null=True, blank=True)
+    type = models.CharField(max_length=100, default='')
+    area = models.CharField(max_length=100, default='')
+    owner_info = models.TextField(default='')
+    longitude = models.FloatField(default=0.0)
+    latitude = models.FloatField(default=0.0)
+    distance = JSONField(default=list)
+    price = models.DecimalField(max_digits=10, decimal_places=2, default=0.0)
+    number_of_beds = models.IntegerField(default=0)
+    number_of_bedrooms = models.IntegerField(default=0)
+    availability_start = models.DateField(default=date.today)
+    availability_end = models.DateField(default=date.today)
+    create_date = models.DateTimeField(auto_now_add=True)
+    status = models.CharField(
+        choices=[
+            ("available", "Available"),
+            ("reserved", "Reserved")
+        ],
+        default="available",
+        max_length=50
+    )
+
+    # Address components
+    room_number = models.CharField(max_length=50, null=True, blank=True, default='')
+    flat_number = models.CharField(max_length=50, default='')
+    floor_number = models.CharField(max_length=50, default='')
+    geo_address = models.TextField(default='')
+
+    class Meta:
+        unique_together = ('room_number', 'flat_number', 'floor_number', 'geo_address')
+
+    def save(self, *args, **kwargs):
+        # Automatically fetch latitude and longitude if not provided
+        if not self.latitude or not self.longitude:
+            geo_data = GeoCodingService.get_coordinates(self.geo_address)
+            if geo_data:
+                self.latitude = geo_data['latitude']
+                self.longitude = geo_data['longitude']
+
+        self.distance = self.calculate_distance()
+        super().save(*args, **kwargs)
+
+    def calculate_distance(self):
+        """
+        Uses the Equirectangular approximation formula.
+        """
+        radius_of_earth_km = 6371
+        CUHK_CAMPUSES = {
+            "Main Campus": {"latitude": 22.41907, "longitude": 114.20693},
+        }
+
+        def equirectangular(lat1, lon1, lat2, lon2):
+            x = math.radians(lon2 - lon1) * math.cos(math.radians((lat1 + lat2) / 2))
+            y = math.radians(lat2 - lat1)
+            return math.sqrt(x**2 + y**2) * radius_of_earth_km
+
+        formatted_distances = []
+        for campus, coords in CUHK_CAMPUSES.items():
+            distance = equirectangular(self.latitude, self.longitude, coords["latitude"], coords["longitude"])
+            formatted_distances.append(f"The distance to {campus} is {distance:.2f} km.")
+
+        return formatted_distances
+
+    def __str__(self):
+        return self.geo_address
     image = models.ImageField(upload_to='accommodation_images/', null=True, blank=True)
     type = models.CharField(max_length=100, default='')
     area = models.CharField(max_length=100, default='')
@@ -73,12 +138,8 @@ class Accommodation(models.Model):
         radius_of_earth_km = 6371
 
         # HKU campuses with their latitudes and longitudes
-        HKU_CAMPUSES = {
-            "Main Campus": {"latitude": 22.28405, "longitude": 114.13784},
-            "Sassoon Road Campus": {"latitude": 22.2675, "longitude": 114.12881},
-            "Swire Institute of Marine Science": {"latitude": 22.20805, "longitude": 114.26021},
-            "Kadoorie Centre": {"latitude": 22.43022, "longitude": 114.11429},
-            "Faculty of Dentistry": {"latitude": 22.28649, "longitude": 114.14426},
+        CUHK_CAMPUSES = {
+            "Main Campus": {"latitude": 22.41907, "longitude": 114.20693},
         }
 
         # Function to calculate the Equirectangular distance
@@ -89,7 +150,7 @@ class Accommodation(models.Model):
 
         # Calculate distances to all campuses
         formatted_distances = []
-        for campus, coords in HKU_CAMPUSES.items():
+        for campus, coords in CUHK_CAMPUSES.items():
             distance = equirectangular(self.latitude, self.longitude, coords["latitude"], coords["longitude"])
             formatted_distances.append(f"The distance to {campus} is {distance:.2f} km.")
 
