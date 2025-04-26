@@ -20,12 +20,13 @@ class AccommodationSerializer(serializers.ModelSerializer):
     class Meta:
         model = Accommodation
         fields = [
-            "id", "image", "type", "owner_info", "longitude", "latitude",
+            "property_id", "image", "type", "owner_info", "longitude", "latitude",
             "area", "distance", "price", "number_of_beds", "number_of_bedrooms",
             "availability_start", "availability_end", "create_date", "status",
             "room_number", "flat_number", "floor_number", "geo_address",
             # "cedars_specialist"
         ]
+        read_only_fields = ["property_id"]
 
 class StudentSerializer(serializers.ModelSerializer):
     # user = UserSerializer()
