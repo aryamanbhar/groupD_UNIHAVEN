@@ -36,8 +36,8 @@ class AccommodationSearch(generics.ListAPIView):
     serializer_class = AccommodationSerializer
     filterset_class = AccommodationFilter
     filter_backends = [filters.SearchFilter, DjangoFilterBackend, filters.OrderingFilter]
-    filterset_fields = ["name", "number_of_beds", "number_of_bedrooms", "availability_start", "availability_end", "price", "distance"]
-    search_fields = ["type", "name"]
+    filterset_fields = ["number_of_beds", "number_of_bedrooms", "availability_start", "availability_end", "price", "distance"]
+    search_fields = ["type", "geo_address"]
     ordering_fields = ["distance"]
     # ordering_fields = ["type", "number_of_beds", "number_of_bedrooms", "availability_start", "availability_end", "price", "distance"]
 
@@ -53,7 +53,7 @@ class AccommodationSearch(generics.ListAPIView):
 class AccommodationDetail(generics.RetrieveAPIView):
     queryset = Accommodation.objects.all()
     serializer_class = AccommodationSerializer
-    lookup_field = 'name'
+    lookup_field = 'geo_address'
 
 class AccommodationListView(generics.ListAPIView):
     queryset = Accommodation.objects.all()
@@ -61,7 +61,7 @@ class AccommodationListView(generics.ListAPIView):
     filter_backends = [DjangoFilterBackend, filters.OrderingFilter, filters.SearchFilter]
     filterset_fields = ["type", "status", "price", "number_of_beds"]
     ordering_fields = ["price", "distance"]
-    search_fields = ["name", "owner_info"]
+    search_fields = ["geo_address", "owner_info"]
 
     
 class AccommodationRetrieveUpdateDeleteView(generics.RetrieveUpdateDestroyAPIView):
