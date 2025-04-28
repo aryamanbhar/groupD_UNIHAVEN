@@ -29,8 +29,8 @@ class AccommodationsViewAll(generics.ListAPIView):
 
     def get_queryset(self):
         # only return those still available
-        return Accommodation.objects.filter(status="available")
-
+        return Accommodation.objects.all()
+    
 class AccommodationUpload(generics.ListCreateAPIView):
     queryset = Accommodation.objects.all()
     serializer_class = AccommodationSerializer
@@ -59,20 +59,6 @@ class AccommodationDetail(generics.RetrieveAPIView):
     serializer_class = AccommodationSerializer
     lookup_field = 'geo_address'
 
-# class AccommodationListView(generics.ListAPIView):
-#     queryset = Accommodation.objects.all()
-#     serializer_class = AccommodationSerializer
-#     filter_backends = [DjangoFilterBackend, filters.OrderingFilter, filters.SearchFilter]
-#     filterset_fields = ["type", "status", "price", "number_of_beds"]
-#     ordering_fields = ["price", "distance"]
-#     search_fields = ["geo_address", "owner_info"]
-
-    
-# class AccommodationRetrieveUpdateDeleteView(generics.RetrieveUpdateDestroyAPIView):
-#     queryset = Accommodation.objects.all()
-#     serializer_class = AccommodationSerializer
-#     lookup_field = 'property_id'
-
 
 
 
@@ -82,24 +68,9 @@ class ReservationCedarsListView(generics.ListAPIView):
     queryset = Reservation.objects.all()
     serializer_class = ReservationSerializer
 
-class ReservationCedarsCancelView(generics.DestroyAPIView):
-    def delete(self, request, student_id):
-        reservation = Reservation.objects.get(student__student_id=student_id)
-
-        reservation.delete()
-        return Response(
-            {"message": f"Reservation of {student_id} cancelled."},
-            status=status.HTTP_200_OK
-        )
-
-
-
-
-class ReservationStudentView(generics.ListAPIView):
-    serializer_class = ReservationSerializer
     def get_queryset(self):
-        student_id = self.kwargs["student_id"]
-        return Reservation.objects.filter(student__student_id=student_id)
+        return Reservation.objects.all()
+        # return Reservation.objects.exclude(status="cancelled")
 
 
 class ReservationCreateView(generics.CreateAPIView):
@@ -109,8 +80,16 @@ class ReservationCreateView(generics.CreateAPIView):
     def perform_create(self, serializer):
         serializer.save(status='reserved')
 
+class ReservationStudentViewOrCancel(generics.ListAPIView):
+    serializer_class = ReservationSerializer
+    lookup_field     = 'student__student_id'
+    lookup_url_kwarg = 'student_id'
 
-class ReservationCancelView(generics.DestroyAPIView):
+    def get_queryset(self):
+        student_id = self.kwargs['student_id']
+        return Reservation.objects.filter(student__student_id=student_id)
+
+
     def delete(self, request, student_id):
         # Find the student's reservation
         try:
@@ -121,6 +100,23 @@ class ReservationCancelView(generics.DestroyAPIView):
         # Delete the reservation
         reservation.delete()
         return Response({"message": "Reservation cancelled successfully."}, status=status.HTTP_204_NO_CONTENT)
+
+
+# class ReservationCancelView(generics.DestroyAPIView):
+#     def get_queryset(self):
+#         student_id = self.kwargs["student_id"]
+#         return Reservation.objects.filter(student__student_id=student_id)
+
+#     def delete(self, request, student_id):
+#         # Find the student's reservation
+#         try:
+#             reservation = Reservation.objects.get(student__student_id=student_id)
+#         except Reservation.DoesNotExist:
+#             return Response({"error": "Reservation not found."}, status=status.HTTP_404_NOT_FOUND)
+
+#         # Delete the reservation
+#         reservation.delete()
+#         return Response({"message": "Reservation cancelled successfully."}, status=status.HTTP_204_NO_CONTENT)
 
 
 
