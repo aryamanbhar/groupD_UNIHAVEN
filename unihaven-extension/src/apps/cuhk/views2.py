@@ -102,23 +102,6 @@ class ReservationStudentViewOrCancel(generics.ListAPIView):
         return Response({"message": "Reservation cancelled successfully."}, status=status.HTTP_204_NO_CONTENT)
 
 
-# class ReservationCancelView(generics.DestroyAPIView):
-#     def get_queryset(self):
-#         student_id = self.kwargs["student_id"]
-#         return Reservation.objects.filter(student__student_id=student_id)
-
-#     def delete(self, request, student_id):
-#         # Find the student's reservation
-#         try:
-#             reservation = Reservation.objects.get(student__student_id=student_id)
-#         except Reservation.DoesNotExist:
-#             return Response({"error": "Reservation not found."}, status=status.HTTP_404_NOT_FOUND)
-
-#         # Delete the reservation
-#         reservation.delete()
-#         return Response({"message": "Reservation cancelled successfully."}, status=status.HTTP_204_NO_CONTENT)
-
-
 
 #RATINGS
 
