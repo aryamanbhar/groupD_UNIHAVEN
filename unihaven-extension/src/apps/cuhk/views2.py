@@ -27,6 +27,10 @@ class AccommodationsViewAll(generics.ListAPIView):
     serializer_class = AccommodationSerializer
     pagination_class = None  # Remove if you want pagination
 
+    def get_queryset(self):
+        # only return those still available
+        return Accommodation.objects.filter(status="available")
+
 class AccommodationUpload(generics.ListCreateAPIView):
     queryset = Accommodation.objects.all()
     serializer_class = AccommodationSerializer
@@ -55,19 +59,19 @@ class AccommodationDetail(generics.RetrieveAPIView):
     serializer_class = AccommodationSerializer
     lookup_field = 'geo_address'
 
-class AccommodationListView(generics.ListAPIView):
-    queryset = Accommodation.objects.all()
-    serializer_class = AccommodationSerializer
-    filter_backends = [DjangoFilterBackend, filters.OrderingFilter, filters.SearchFilter]
-    filterset_fields = ["type", "status", "price", "number_of_beds"]
-    ordering_fields = ["price", "distance"]
-    search_fields = ["geo_address", "owner_info"]
+# class AccommodationListView(generics.ListAPIView):
+#     queryset = Accommodation.objects.all()
+#     serializer_class = AccommodationSerializer
+#     filter_backends = [DjangoFilterBackend, filters.OrderingFilter, filters.SearchFilter]
+#     filterset_fields = ["type", "status", "price", "number_of_beds"]
+#     ordering_fields = ["price", "distance"]
+#     search_fields = ["geo_address", "owner_info"]
 
     
-class AccommodationRetrieveUpdateDeleteView(generics.RetrieveUpdateDestroyAPIView):
-    queryset = Accommodation.objects.all()
-    serializer_class = AccommodationSerializer
-    lookup_field = 'property_id'
+# class AccommodationRetrieveUpdateDeleteView(generics.RetrieveUpdateDestroyAPIView):
+#     queryset = Accommodation.objects.all()
+#     serializer_class = AccommodationSerializer
+#     lookup_field = 'property_id'
 
 
 
