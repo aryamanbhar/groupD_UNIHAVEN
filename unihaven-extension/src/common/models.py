@@ -33,6 +33,13 @@ class Accommodation(models.Model):
         default="available",
         max_length=50
     )
+    total_rating = models.IntegerField(default=0)
+    num_ratings = models.IntegerField(default=0)
+
+    def average_rating(self):
+        if self.num_ratings == 0:
+            return None
+        return round(self.total_rating / self.num_ratings, 2)
 
     def __str__(self):
         return self.name

@@ -1,8 +1,9 @@
 from django.urls import path
 from .views2 import (
  AccommodationDetail, AccommodationSearch, AccommodationUpload, AccommodationsViewAll, 
- ReservationCreateView, ReservationCedarsListView, ReservationStudentViewOrCancel, StudentCreateView, CedarsSpecialistCreateView, CedarsSpecialistListView, RatingCreateView, update_contract_status,
- StudentListView
+ ReservationCreateView, ReservationCedarsListView, ReservationStudentViewOrCancel, StudentCreateView, CedarsSpecialistCreateView, 
+ CedarsSpecialistListView, update_contract_status,
+ StudentListView, AccommodationRateView
 )
 from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView, SpectacularRedocView
 
@@ -12,7 +13,8 @@ urlpatterns = [
     path('accommodations/upload/', AccommodationUpload.as_view(), name='accommodation-list'),  
     path('accommodations/search/', AccommodationSearch.as_view(), name='accommodation-search'),
     path('accommodations/search/<str:name>/', AccommodationDetail.as_view(), name='accommodation-detail'),
-    path('accommodations/rate/', RatingCreateView.as_view(), name='accommodation-rate'),
+    # path('accommodations/rate/', RatingCreateView.as_view(), name='accommodation-rate'),
+    path('accommodations/<int:property_id>/rate/', AccommodationRateView.as_view(), name='accommodation-rate'),
 
     #cedars
     path("reservations/", ReservationCedarsListView.as_view(), name="reservation-list"),

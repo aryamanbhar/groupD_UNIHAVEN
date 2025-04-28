@@ -16,6 +16,7 @@ class CedarsSpecialistSerializer(serializers.ModelSerializer):
 
 class AccommodationSerializer(serializers.ModelSerializer):
     # cedars_specialist = CedarsSpecialistSerializer()
+    average_rating = serializers.SerializerMethodField()
 
     class Meta:
         model = Accommodation
@@ -23,10 +24,21 @@ class AccommodationSerializer(serializers.ModelSerializer):
             "property_id", "image", "type", "owner_info", "longitude", "latitude",
             "area", "distance", "price", "number_of_beds", "number_of_bedrooms",
             "availability_start", "availability_end", "create_date", "status",
-            "room_number", "flat_number", "floor_number", "geo_address",
+            "room_number", "flat_number", "floor_number", "geo_address", "average_rating"
             # "cedars_specialist"
         ]
         read_only_fields = ["property_id"]
+
+    def get_average_rating(self, obj):
+        return obj.average_rating()  # <-- Call the method to get the value
+
+class AccommodationRatingSerializer(serializers.Serializer):
+    rating = serializers.IntegerField(min_value=0, max_value=5)
+
+    def validate(self, data):
+        # you can add extra validation if needed
+        return data
+
 
 class StudentSerializer(serializers.ModelSerializer):
     # user = UserSerializer()
