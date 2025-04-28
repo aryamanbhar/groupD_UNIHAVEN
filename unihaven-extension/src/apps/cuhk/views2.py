@@ -78,6 +78,18 @@ class ReservationCedarsListView(generics.ListAPIView):
     queryset = Reservation.objects.all()
     serializer_class = ReservationSerializer
 
+class ReservationCedarsCancelView(generics.DestroyAPIView):
+    def delete(self, request, student_id):
+        reservation = Reservation.objects.get(student__student_id=student_id)
+
+        reservation.delete()
+        return Response(
+            {"message": f"Reservation of {student_id} cancelled."},
+            status=status.HTTP_200_OK
+        )
+
+
+
 
 class ReservationStudentView(generics.ListAPIView):
     serializer_class = ReservationSerializer
@@ -91,7 +103,7 @@ class ReservationCreateView(generics.CreateAPIView):
     serializer_class = ReservationSerializer
 
     def perform_create(self, serializer):
-        serializer.save()
+        serializer.save(status='reserved')
 
 
 class ReservationCancelView(generics.DestroyAPIView):
@@ -105,6 +117,7 @@ class ReservationCancelView(generics.DestroyAPIView):
         # Delete the reservation
         reservation.delete()
         return Response({"message": "Reservation cancelled successfully."}, status=status.HTTP_204_NO_CONTENT)
+
 
 
 #RATINGS

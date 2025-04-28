@@ -61,15 +61,15 @@ class Specialist(models.Model):
     def __str__(self):
         return self.email
 
-class Rating(models.Model):
-    accommodation = models.ForeignKey(Accommodation, on_delete=models.CASCADE)
-    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
-    score = models.IntegerField(choices=[(i, i) for i in range(1, 6)])
-    comment = models.TextField()
-    is_anonymous = models.BooleanField(default=False)
-    created_at = models.DateTimeField(auto_now_add=True)
-    contract = models.ForeignKey(Contract, on_delete=models.CASCADE)
-    images = models.ManyToManyField(UploadedImage)
+# class Rating(models.Model):
+#     accommodation = models.ForeignKey(Accommodation, on_delete=models.CASCADE)
+#     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+#     score = models.IntegerField(choices=[(i, i) for i in range(1, 6)])
+#     comment = models.TextField()
+#     is_anonymous = models.BooleanField(default=False)
+#     created_at = models.DateTimeField(auto_now_add=True)
+#     contract = models.ForeignKey(Contract, on_delete=models.CASCADE)
+#     images = models.ManyToManyField(UploadedImage)
 
-class UploadedImage(models.Model):
-    image = models.ImageField(upload_to='rating_images/')
+# class UploadedImage(models.Model):
+#     image = models.ImageField(upload_to='rating_images/')

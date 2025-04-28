@@ -39,17 +39,20 @@ class StudentSerializer(serializers.ModelSerializer):
 class ReservationSerializer(serializers.ModelSerializer):
 
     # accept a student_id in payload instead of nested student object
-    student_id = serializers.CharField(write_only=True)
+    # student_id = serializers.CharField(write_only=True)
+    student_id = serializers.CharField(source='student.student_id')
+    status = serializers.CharField(read_only=True)
 
     class Meta:
         model = Reservation
-        fields = ['student_id', 'accommodation']
-        read_only_fields = ['student_id']
+        fields = ['student_id', 'accommodation', 'status']
+        # read_only_fields = ['student_id']
 
     def create(self, validated_data):
         # get or create the student by provided student_id
-        student_id = validated_data.pop('student_id')
-        student, _ = Student.objects.get_or_create(student_id=student_id)
+        student_data = validated_data.pop('student')
+        sid = student_data['student_id']       
+        student, _ = Student.objects.get_or_create(student_id=sid)
         reservation = Reservation.objects.create(student=student, **validated_data)
         return reservation
 

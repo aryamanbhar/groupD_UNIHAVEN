@@ -56,41 +56,41 @@ class RegisterView(APIView):
 
         return Response({"message": "User created successfully!"}, status=status.HTTP_201_CREATED)
 
-class RatingCreateView(LoginRequiredMixin, CreateView):
-    model = Rating
-    form_class = RatingForm
-    template_name = 'ratings/create.html'
+# class RatingCreateView(LoginRequiredMixin, CreateView):
+#     model = Rating
+#     form_class = RatingForm
+#     template_name = 'ratings/create.html'
 
-    def get_form_kwargs(self):
-        kwargs = super().get_form_kwargs()
-        kwargs['user'] = self.request.user
-        return kwargs
+#     def get_form_kwargs(self):
+#         kwargs = super().get_form_kwargs()
+#         kwargs['user'] = self.request.user
+#         return kwargs
 
-    def form_valid(self, form):
-        contract = Contract.objects.get(
-            accommodation=form.cleaned_data['accommodation'],
-            user=self.request.user,
-            status='signed'
-        )
-        rating = form.save(commit=False)
-        rating.user = self.request.user
-        rating.contract = contract
-        rating.save()
+#     def form_valid(self, form):
+#         contract = Contract.objects.get(
+#             accommodation=form.cleaned_data['accommodation'],
+#             user=self.request.user,
+#             status='signed'
+#         )
+#         rating = form.save(commit=False)
+#         rating.user = self.request.user
+#         rating.contract = contract
+#         rating.save()
         
-        images = self.request.FILES.getlist('images')
-        for image in images:
-            UploadedImage.objects.create(rating=rating, image=image)
+#         images = self.request.FILES.getlist('images')
+#         for image in images:
+#             UploadedImage.objects.create(rating=rating, image=image)
             
-        return redirect('rating-list')
+#         return redirect('rating-list')
 
-class RatingListView(ListView):
-    model = Rating
-    template_name = 'ratings/list.html'
-    paginate_by = 10
+# class RatingListView(ListView):
+#     model = Rating
+#     template_name = 'ratings/list.html'
+#     paginate_by = 10
 
-    def get_queryset(self):
-        queryset = super().get_queryset()
-        accommodation_id = self.request.GET.get('accommodation_id')
-        if accommodation_id:
-            queryset = queryset.filter(accommodation__property_id=accommodation_id)
-        return queryset.order_by('-created_at')
+#     def get_queryset(self):
+#         queryset = super().get_queryset()
+#         accommodation_id = self.request.GET.get('accommodation_id')
+#         if accommodation_id:
+#             queryset = queryset.filter(accommodation__property_id=accommodation_id)
+#         return queryset.order_by('-created_at')

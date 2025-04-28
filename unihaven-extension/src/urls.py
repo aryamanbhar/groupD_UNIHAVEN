@@ -7,7 +7,5 @@ urlpatterns = [
     path('cuhk/', include('apps.cuhk.urls')),
     path('hkust/', include('apps.hkust.urls')),  # Ensure this line is correct
     path('login/', LoginView.as_view(), name='login'),  # Add the login URL here
-    path('register/', RegisterView.as_view(), name='register'),
-    path('ratings/create/', views.RatingCreateView.as_view(), name='rating-create'),
-    path('ratings/', views.RatingListView.as_view(), name='rating-list'),
+    path('register/', RegisterView.as_view(), name='register')
 ]
