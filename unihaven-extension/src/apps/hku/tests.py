@@ -6,11 +6,17 @@ from unittest.mock import patch
 
 
 class TestAccommodation(APITestCase):
-    @patch("apps.hku.models.GeoCodingService.get_coordinates", return_value={"Latitude": 22.3, "Longitude": 114.2})
-    def setUp(self, mock_geo):
+    def setUp(self):
         self.client = APIClient()
-        self.accommodation = Accommodation.objects.create( property_id=1, property_name="HKU Test Property", 
-                                                          geo_address="Test Location", status="available")
+
+    @patch("apps.hku.models.GeoCodingService.get_coordinates", return_value={"Latitude": 22.3, "Longitude": 114.2})
+    def test_create_accommodation(self, mock_geo):
+        accommodation = Accommodation.objects.create(
+            property_id=1, property_name="HKU Test Property",
+            geo_address="Test Location", status="available"
+        )
+        self.assertEqual(accommodation.latitude, 22.3)
+        self.assertEqual(accommodation.longitude, 114.2)
 
     def test_list_accommodations(self):
         response = self.client.get(reverse("all-accommodations"))
