@@ -17,11 +17,13 @@ class CedarsSpecialist(models.Model):
 class Student(models.Model):
     student_id = models.CharField(max_length=255, unique=True, default='')
     # user = models.OneToOneField(User, on_delete=models.CASCADE, default=1)
-    name = models.CharField(max_length=255, default='')  # added default
-    degree_type = models.CharField(max_length=100, default='')  # added default
+    name = models.CharField(max_length=255, default='')  # added default'
+    contact = models.IntegerField(default=0)
+    university = models.CharField(max_length=100, default='')  # added default
     
 class Accommodation(models.Model):
     property_id = models.AutoField(primary_key=True)  # Automatically incremented integer
+    property_name = models.CharField(max_length=100, default='')
     image = models.ImageField(upload_to='accommodation_images/', null=True, blank=True)
     type = models.CharField(max_length=100, default='')
     area = models.CharField(max_length=100, default='')

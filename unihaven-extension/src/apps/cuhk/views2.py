@@ -92,14 +92,25 @@ class ReservationStudentViewOrCancel(generics.ListAPIView):
 
     def delete(self, request, student_id):
         # Find the student's reservation
+        # try:
+        #     reservation = Reservation.objects.get(student__student_id=student_id)
+        # except Reservation.DoesNotExist:
+        #     return Response({"error": "Reservation not found."}, status=status.HTTP_404_NOT_FOUND)
+
+        # Delete the reservation
         try:
             reservation = Reservation.objects.get(student__student_id=student_id)
         except Reservation.DoesNotExist:
             return Response({"error": "Reservation not found."}, status=status.HTTP_404_NOT_FOUND)
 
-        # Delete the reservation
+        accommodation = reservation.accommodation
+        accommodation.status = 'available'
+        accommodation.save()
+        
         reservation.delete()
         return Response({"message": "Reservation cancelled successfully."}, status=status.HTTP_204_NO_CONTENT)
+    
+        serializer_class.save(status='reserved')
 
 
 
