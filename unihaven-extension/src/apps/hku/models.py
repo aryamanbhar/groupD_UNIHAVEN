@@ -63,15 +63,17 @@ class Accommodation(models.Model):
         unique_together = ('room_number', 'flat_number', 'floor_number', 'geo_address')
 
     def save(self, *args, **kwargs):
-        # Automatically fetch latitude and longitude if not provided
-        if not self.latitude or not self.longitude:
-            geo_data = GeoCodingService.get_coordinates(self.geo_address)
-            if geo_data:
-                self.latitude = geo_data['latitude']
-                self.longitude = geo_data['longitude']
+        geo_data = GeoCodingService.get_coordinates(self.geo_address)
+        if geo_data and geo_data.get("Latitude") and geo_data.get("Longitude"):
+            self.latitude = float(geo_data.get("Latitude"))
+            self.longitude = float(geo_data.get("Longitude"))
+        else:
+            self.latitude = 0.0  # Fallback values
+            self.longitude = 0.0
 
         self.distance = self.calculate_distance()
         super().save(*args, **kwargs)
+
 
     def calculate_distance(self):
         """
@@ -101,7 +103,7 @@ class Accommodation(models.Model):
 class Reservation(models.Model):
     reservation_id = models.AutoField(primary_key=True)
     student = models.ForeignKey(Student, on_delete=models.CASCADE, related_name="reservations", default='')
-    accommodation = models.ForeignKey(Accommodation, on_delete=models.CASCADE, related_name="reservations", unique=True)
+    accommodation = models.ForeignKey(Accommodation, on_delete=models.CASCADE, related_name="reservations")
     start_date = models.DateField(default=date.today)
     end_date = models.DateField(default=date.today)    
     status = models.CharField(

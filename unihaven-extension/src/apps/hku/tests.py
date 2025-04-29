@@ -2,11 +2,15 @@ from rest_framework.test import APITestCase, APIClient
 from rest_framework import status
 from django.urls import reverse
 from apps.hku.models import Accommodation, Reservation, Contract, Student
+from unittest.mock import patch
+
 
 class TestAccommodation(APITestCase):
-    def setUp(self):
+    @patch("apps.hku.models.GeoCodingService.get_coordinates", return_value={"Latitude": 22.3, "Longitude": 114.2})
+    def setUp(self, mock_geo):
         self.client = APIClient()
-        self.accommodation = Accommodation.objects.create(property_id=1, property_name="HKU Test Property", status="available")
+        self.accommodation = Accommodation.objects.create( property_id=1, property_name="HKU Test Property", 
+                                                          geo_address="Test Location", status="available")
 
     def test_list_accommodations(self):
         response = self.client.get(reverse("all-accommodations"))
