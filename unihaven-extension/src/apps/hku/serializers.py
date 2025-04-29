@@ -60,8 +60,24 @@ class ReservationSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Reservation
-        fields = ['reservation_id', 'name', 'contact', 'student_id', 'accommodation', 'status']
+        fields = ['reservation_id', 'name', 'contact', 'student_id', 'accommodation', 'start_date', 'end_date', 'status']
         # read_only_fields = ['student_id']
+
+    def validate(self, data):
+        # Check that reservation dates fall within accommodation availability
+        accommodation = data.get('accommodation')
+        start_date = data.get('start_date')
+        end_date = data.get('end_date')
+
+        if start_date < accommodation.availability_start or end_date > accommodation.availability_end:
+            raise serializers.ValidationError(
+                "Reservation dates must be within the accommodation's availability period."
+            )
+        if start_date > end_date:
+            raise serializers.ValidationError(
+                "Start date must be before or equal to end date."
+            )
+        return data
 
     def create(self, validated_data):
         # get or create the student by provided student_id

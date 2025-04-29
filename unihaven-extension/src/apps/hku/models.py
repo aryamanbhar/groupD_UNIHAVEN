@@ -102,6 +102,8 @@ class Reservation(models.Model):
     reservation_id = models.AutoField(primary_key=True)
     student = models.ForeignKey(Student, on_delete=models.CASCADE, related_name="reservations", default='')
     accommodation = models.ForeignKey(Accommodation, on_delete=models.CASCADE, related_name="reservations", unique=True)
+    start_date = models.DateField(default=date.today)
+    end_date = models.DateField(default=date.today)    
     status = models.CharField(
         choices=[
             ("available", "Available"),
