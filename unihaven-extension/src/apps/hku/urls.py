@@ -1,8 +1,9 @@
 from django.urls import path
 from .views2 import (
- AccommodationDetail, AccommodationSearch, AccommodationUpload, AccommodationsViewAll, AccommodationRetrieveUpdateDeleteView, ReservationCancelView, 
- ReservationCreateView, ReservationCedarsListView, ReservationStudentView, StudentCreateView, CedarsSpecialistCreateView, CedarsSpecialistListView, RatingCreateView, 
- StudentListView, update_failed_status, update_signed_status, create_contract, ContractListView,
+ AccommodationDetail, AccommodationSearch, AccommodationUpload, AccommodationsViewAll, 
+ ReservationCreateView, ReservationCedarsListView, ReservationStudentViewOrCancel, StudentCreateView, CedarsSpecialistCreateView, 
+ CedarsSpecialistListView, update_failed_status, update_signed_status, create_contract, ContractListView,
+ StudentListView, AccommodationRateView
 )
 from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView, SpectacularRedocView
 
@@ -12,21 +13,19 @@ urlpatterns = [
     path('accommodations/upload/', AccommodationUpload.as_view(), name='accommodation-list'),  
     path('accommodations/search/', AccommodationSearch.as_view(), name='accommodation-search'),
     path('accommodations/search/<str:name>/', AccommodationDetail.as_view(), name='accommodation-detail'),
-    path('accommodations/rate/', RatingCreateView.as_view(), name='accommodation-rate'),
+    path('accommodations/<int:property_id>/rate/', AccommodationRateView.as_view(), name='accommodation-rate'),
 
+    #cedars
     path("reservations/", ReservationCedarsListView.as_view(), name="reservation-list"),
-    path("reservations/create/", ReservationCreateView.as_view(), name="reservation-create"),
     path('contracts/<int:reservation_id>/create/', create_contract, name='create_contract'),
     path('contracts/<int:contract_id>/failed-status/', update_failed_status, name='update_failed_status'),
     path('contracts/<int:contract_id>/signed-status/', update_signed_status, name='update_signed_status'),
     path('contracts/', ContractListView.as_view(), name='contract-list'),
 
+    #students
+    path("reservations/create/", ReservationCreateView.as_view(), name="reservation-create"),
+    path("reservations/<int:student_id>/", ReservationStudentViewOrCancel.as_view(), name="reservation-student-view"),
 
-
-    #student views their reservation
-    path("reservations/<int:student_id>/", ReservationStudentView.as_view(), name="reservation-student-view"),
-    #student cancels their reservation
-    path("reservations/<int:student_id>/cancel/", ReservationCancelView.as_view(), name="reservation-cancel"),
 
     path("students/create/", StudentCreateView.as_view(), name="student-create"),
     path('students/', StudentListView.as_view(), name='student-list'),

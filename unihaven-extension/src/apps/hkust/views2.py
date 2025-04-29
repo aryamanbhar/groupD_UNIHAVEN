@@ -15,9 +15,9 @@ from .models import (
 )
 from .serializers import (
     CedarsSpecialistSerializer, AccommodationSerializer, StudentSerializer,
-    ReservationSerializer, ContractSerializer, RatingSerializer
+    ReservationSerializer, ContractSerializer, RatingSerializer, AccommodationRatingSerializer
 )
-from common.utils.permissions import IsHKUST, IsStaff, IsStudent, IsAdmin
+from common.utils.permissions import IsCUHK, IsStaff, IsStudent, IsAdmin
 
 
 #ACCOMMODATIONS
@@ -27,6 +27,10 @@ class AccommodationsViewAll(generics.ListAPIView):
     serializer_class = AccommodationSerializer
     pagination_class = None  # Remove if you want pagination
 
+    def get_queryset(self):
+        # only return those still available
+        return Accommodation.objects.all()
+    
 class AccommodationUpload(generics.ListCreateAPIView):
     queryset = Accommodation.objects.all()
     serializer_class = AccommodationSerializer
@@ -55,20 +59,6 @@ class AccommodationDetail(generics.RetrieveAPIView):
     serializer_class = AccommodationSerializer
     lookup_field = 'geo_address'
 
-class AccommodationListView(generics.ListAPIView):
-    queryset = Accommodation.objects.all()
-    serializer_class = AccommodationSerializer
-    filter_backends = [DjangoFilterBackend, filters.OrderingFilter, filters.SearchFilter]
-    filterset_fields = ["type", "status", "price", "number_of_beds"]
-    ordering_fields = ["price", "distance"]
-    search_fields = ["geo_address", "owner_info"]
-
-    
-class AccommodationRetrieveUpdateDeleteView(generics.RetrieveUpdateDestroyAPIView):
-    queryset = Accommodation.objects.all()
-    serializer_class = AccommodationSerializer
-    lookup_field = 'property_id'
-
 
 
 
@@ -78,12 +68,9 @@ class ReservationCedarsListView(generics.ListAPIView):
     queryset = Reservation.objects.all()
     serializer_class = ReservationSerializer
 
-
-class ReservationStudentView(generics.ListAPIView):
-    serializer_class = ReservationSerializer
     def get_queryset(self):
-        student_id = self.kwargs["student_id"]
-        return Reservation.objects.filter(student__student_id=student_id)
+        return Reservation.objects.all()
+        # return Reservation.objects.exclude(status="cancelled")
 
 
 class ReservationCreateView(generics.CreateAPIView):
@@ -91,10 +78,18 @@ class ReservationCreateView(generics.CreateAPIView):
     serializer_class = ReservationSerializer
 
     def perform_create(self, serializer):
-        serializer.save()
+        serializer.save(status='reserved')
+
+class ReservationStudentViewOrCancel(generics.ListAPIView):
+    serializer_class = ReservationSerializer
+    lookup_field     = 'student__student_id'
+    lookup_url_kwarg = 'student_id'
+
+    def get_queryset(self):
+        student_id = self.kwargs['student_id']
+        return Reservation.objects.filter(student__student_id=student_id)
 
 
-class ReservationCancelView(generics.DestroyAPIView):
     def delete(self, request, student_id):
         # Find the student's reservation
         try:
@@ -107,60 +102,68 @@ class ReservationCancelView(generics.DestroyAPIView):
         return Response({"message": "Reservation cancelled successfully."}, status=status.HTTP_204_NO_CONTENT)
 
 
+
 #RATINGS
 
-class RatingCreateView(generics.CreateAPIView):
-    queryset = Rating.objects.all()
-    serializer_class = RatingSerializer
+class AccommodationRateView(generics.GenericAPIView):
+    serializer_class = AccommodationRatingSerializer
+
+    def post(self, request, property_id):
+        try:
+            accommodation = Accommodation.objects.get(property_id=property_id)
+        except Accommodation.DoesNotExist:
+            return Response({"error": "Accommodation not found."}, status=status.HTTP_404_NOT_FOUND)
+
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        rating = serializer.validated_data['rating']
+
+        # Update the rating
+        accommodation.total_rating += rating
+        accommodation.num_ratings += 1
+        accommodation.save()
+
+        return Response({
+            "message": "Rating submitted successfully.",
+            "new_average_rating": accommodation.average_rating()
+        }, status=status.HTTP_200_OK)
+
+
+# class RatingCreateView(generics.CreateAPIView):
+#     queryset = Rating.objects.all()
+#     serializer_class = RatingSerializer
     
-    def perform_create(self, serializer):
-        student = self.request.user.student
-        accommodation_id = self.request.data.get('accommodation')
-        accommodation = get_object_or_404(Accommodation, pk=accommodation_id)
+#     def perform_create(self, serializer):
+#         student = self.request.user.student
+#         accommodation_id = self.request.data.get('accommodation')
+#         accommodation = get_object_or_404(Accommodation, pk=accommodation_id)
         
-        has_contract = Contract.objects.filter(
-            reservation__student=student,
-            reservation__accommodation=accommodation,
-            contract_status='signed'
-        ).exists()
+#         has_contract = Contract.objects.filter(
+#             reservation__student=student,
+#             reservation__accommodation=accommodation,
+#             contract_status='signed'
+#         ).exists()
             
-        serializer.save(student=student, accommodation=accommodation)
+#         serializer.save(student=student, accommodation=accommodation)
 
-class RatingRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
-    queryset = Rating.objects.all()
-    serializer_class = RatingSerializer
-    permission_classes = [IsAuthenticated]
+# class RatingRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
+#     queryset = Rating.objects.all()
+#     serializer_class = RatingSerializer
+#     permission_classes = [IsAuthenticated]
 
-    def get_object(self):
-        rating = super().get_object()
-        if rating.student.user != self.request.user:
-            raise PermissionDenied("You can only modify your own ratings")
-        return rating
+#     def get_object(self):
+#         rating = super().get_object()
+#         if rating.student.user != self.request.user:
+#             raise PermissionDenied("You can only modify your own ratings")
+#         return rating
 
 
 
-class RatingListView(generics.ListAPIView):
-    queryset = Rating.objects.all()
-    serializer_class = RatingSerializer
-    filter_backends = [DjangoFilterBackend]
-    filterset_fields = ["score", "student", "accommodation"]
-
-class StudentCreateView(generics.CreateAPIView):
-    queryset = Student.objects.all()
-    serializer_class = StudentSerializer
-
-class StudentListView(generics.ListAPIView):
-    queryset = Student.objects.all()
-    serializer_class = StudentSerializer
-
-class CedarsSpecialistCreateView(generics.CreateAPIView):
-    queryset = CedarsSpecialist.objects.all()
-    serializer_class = CedarsSpecialistSerializer
-
-class CedarsSpecialistListView(generics.ListAPIView):
-    queryset = CedarsSpecialist.objects.all()
-    serializer_class = CedarsSpecialistSerializer
-
+# class RatingListView(generics.ListAPIView):
+#     queryset = Rating.objects.all()
+#     serializer_class = RatingSerializer
+#     filter_backends = [DjangoFilterBackend]
+#     filterset_fields = ["score", "student", "accommodation"]
 
 # contracts
 from django.shortcuts import get_object_or_404

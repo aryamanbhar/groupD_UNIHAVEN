@@ -16,6 +16,7 @@ class CedarsSpecialistSerializer(serializers.ModelSerializer):
 
 class AccommodationSerializer(serializers.ModelSerializer):
     # cedars_specialist = CedarsSpecialistSerializer()
+    average_rating = serializers.SerializerMethodField()
 
     class Meta:
         model = Accommodation
@@ -23,10 +24,21 @@ class AccommodationSerializer(serializers.ModelSerializer):
             "property_id", "image", "type", "owner_info", "longitude", "latitude",
             "area", "distance", "price", "number_of_beds", "number_of_bedrooms",
             "availability_start", "availability_end", "create_date", "status",
-            "room_number", "flat_number", "floor_number", "geo_address",
+            "room_number", "flat_number", "floor_number", "geo_address", "average_rating"
             # "cedars_specialist"
         ]
         read_only_fields = ["property_id"]
+
+    def get_average_rating(self, obj):
+        return obj.average_rating()  # <-- Call the method to get the value
+
+class AccommodationRatingSerializer(serializers.Serializer):
+    rating = serializers.IntegerField(min_value=0, max_value=5)
+
+    def validate(self, data):
+        # you can add extra validation if needed
+        return data
+
 
 class StudentSerializer(serializers.ModelSerializer):
     # user = UserSerializer()
@@ -39,76 +51,22 @@ class StudentSerializer(serializers.ModelSerializer):
 class ReservationSerializer(serializers.ModelSerializer):
 
     # accept a student_id in payload instead of nested student object
-    student_id = serializers.CharField(write_only=True)
+    # student_id = serializers.CharField(write_only=True)
+    student_id = serializers.CharField(source='student.student_id')
+    status = serializers.CharField(read_only=True)
 
     class Meta:
         model = Reservation
-        fields = ['student_id', 'accommodation']
-        read_only_fields = ['student_id']
+        fields = ['reservation_id','student_id', 'accommodation', 'status']
+        # read_only_fields = ['student_id']
 
     def create(self, validated_data):
         # get or create the student by provided student_id
-        student_id = validated_data.pop('student_id')
-        student, _ = Student.objects.get_or_create(student_id=student_id)
+        student_data = validated_data.pop('student')
+        sid = student_data['student_id']       
+        student, _ = Student.objects.get_or_create(student_id=sid)
         reservation = Reservation.objects.create(student=student, **validated_data)
         return reservation
-
-
-
-
-
-
-
-# class ReservationSerializer(serializers.ModelSerializer):
-#     student_id = serializers.IntegerField(write_only=True)
-#     accommodation = serializers.PrimaryKeyRelatedField(queryset=Accommodation.objects.filter(status="available"), write_only=True)
-#     accommodation_name = serializers.StringRelatedField(source='accommodation', read_only=True)
-
-#     class Meta:
-#         model = Reservation
-#         fields = ["student_id", "accommodation", "status", "accommodation_name"]
-#         read_only_fields = ["status", "accommodation_name"]
-
-#     def create(self, validated_data):
-#         student_id = validated_data.pop('student_id')
-#         student = Student.objects.get(id=student_id)
-        
-#         reservation = Reservation.objects.create(
-#             student=student,
-#             status="reserved",
-#             accommodation=validated_data['accommodation']
-#         )
-#         return reservation
-
-#     def to_representation(self, instance):
-#         return {
-#             "student_id": instance.student.id,
-#             "status": instance.status,
-#             "accommodation_name": instance.accommodation.name
-#         }
-
-#     def validate(self, data):
-#         accommodation_name = data.get("accommodation")
-#         student_id = data.get("student_id")
-
-#         if accommodation_name.status != "available":
-#             raise serializers.ValidationError(
-#                 {"accommodation": "This accommodation is not available for reservation."}
-#             )
-
-#         # Check if student exists
-#         if not Student.objects.filter(id=student_id).exists():
-#             raise serializers.ValidationError(
-#                 {"student_id": "Student does not exist."}
-#             )
-
-#         # Check if accommodation already has a reservation
-#         if Reservation.objects.filter(accommodation=accommodation_name, status="reserved").exists():
-#             raise serializers.ValidationError(
-#                 {"accommodation": "This accommodation is already reserved by another student."}
-#             )
-
-#         return data
 
 
 class ContractSerializer(serializers.ModelSerializer):

@@ -9,6 +9,7 @@ import smtplib
 import sys
 from email.mime.text import MIMEText
 
+
 class CedarsSpecialist(models.Model):
         cedars_specialist_id = models.AutoField(primary_key=True)
         email = models.EmailField(unique=True)
@@ -42,6 +43,13 @@ class Accommodation(models.Model):
         default="available",
         max_length=50
     )
+    total_rating = models.IntegerField(default=0)
+    num_ratings = models.IntegerField(default=0)
+
+    def average_rating(self):
+        if self.num_ratings == 0:
+            return None
+        return round(self.total_rating / self.num_ratings, 2)
 
     # Address components
     room_number = models.CharField(max_length=50, null=True, blank=True, default='')
@@ -68,8 +76,8 @@ class Accommodation(models.Model):
         Uses the Equirectangular approximation formula.
         """
         radius_of_earth_km = 6371
-        HKUST_CAMPUSES = {
-            "Main Campus": {"latitude": 22.33584, "longitude": 114.26355},
+        CUHK_CAMPUSES = {
+            "Main Campus": {"latitude": 22.41907, "longitude": 114.20693},
         }
 
         def equirectangular(lat1, lon1, lat2, lon2):
@@ -78,7 +86,7 @@ class Accommodation(models.Model):
             return math.sqrt(x**2 + y**2) * radius_of_earth_km
 
         formatted_distances = []
-        for campus, coords in HKUST_CAMPUSES.items():
+        for campus, coords in CUHK_CAMPUSES.items():
             distance = equirectangular(self.latitude, self.longitude, coords["latitude"], coords["longitude"])
             formatted_distances.append(f"The distance to {campus} is {distance:.2f} km.")
 
@@ -110,6 +118,7 @@ class Reservation(models.Model):
 
         # Save the updated accommodation status
         self.accommodation.save()
+
 
         if self.accommodation.status:
             print (f"Accommodation status: {self.accommodation.status}")
