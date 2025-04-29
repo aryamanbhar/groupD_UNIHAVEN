@@ -1,9 +1,10 @@
 from rest_framework.test import APITestCase, APIClient
 from rest_framework import status
 from django.urls import reverse
-from apps.hku.models import Accommodation, Reservation, Contract, Student  # Adjust if needed
-from apps.cuhk.models import Accommodation as CUHKAccommodation, Reservation as CUHKReservation, Contract as CUHKContract, Student as CUHKStudent
-from apps.hkust.models import Accommodation as HKUSTAccommodation, Reservation as HKUSTReservation, Contract as HKUSTContract, Student as HKUSTStudent
+from src.apps.hku.models import Accommodation, Reservation, Contract, Student
+from src.apps.cuhk.models import Accommodation as CUHKAccommodation, Reservation as CUHKReservation, Contract as CUHKContract, Student as CUHKStudent
+from src.apps.hkust.models import Accommodation as HKUSTAccommodation, Reservation as HKUSTReservation, Contract as HKUSTContract, Student as HKUSTStudent
+
 
 class BaseTestSetup(APITestCase):
     """Common setup for all tests"""
