@@ -1,0 +1,93 @@
+from rest_framework import serializers
+from .models import (
+    CedarsSpecialist, Accommodation, Student, Reservation,
+    Contract, Rating
+)
+
+# class UserSerializer(serializers.ModelSerializer):
+#     class Meta:
+#         model = User
+#         fields = ["id", "email", "phone", "created_at"]
+
+class CedarsSpecialistSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CedarsSpecialist
+        fields = ["email","cedars_specialist_id"]
+
+class AccommodationSerializer(serializers.ModelSerializer):
+    # cedars_specialist = CedarsSpecialistSerializer()
+    average_rating = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Accommodation
+        fields = [
+            "property_id", "image", "type", "owner_info", "longitude", "latitude",
+            "area", "distance", "price", "number_of_beds", "number_of_bedrooms",
+            "availability_start", "availability_end", "create_date", "status",
+            "room_number", "flat_number", "floor_number", "geo_address", "average_rating"
+            # "cedars_specialist"
+        ]
+        read_only_fields = ["property_id"]
+
+    def get_average_rating(self, obj):
+        return obj.average_rating()  # <-- Call the method to get the value
+
+class AccommodationRatingSerializer(serializers.Serializer):
+    rating = serializers.IntegerField(min_value=0, max_value=5)
+
+    def validate(self, data):
+        # you can add extra validation if needed
+        return data
+
+
+class StudentSerializer(serializers.ModelSerializer):
+    # user = UserSerializer()
+
+    class Meta:
+        model = Student
+        fields = ["student_id", "name", "degree_type"]
+
+
+class ReservationSerializer(serializers.ModelSerializer):
+
+    # accept a student_id in payload instead of nested student object
+    # student_id = serializers.CharField(write_only=True)
+    student_id = serializers.CharField(source='student.student_id')
+    status = serializers.CharField(read_only=True)
+
+    class Meta:
+        model = Reservation
+        fields = ['reservation_id','student_id', 'accommodation', 'status']
+        # read_only_fields = ['student_id']
+
+    def create(self, validated_data):
+        # get or create the student by provided student_id
+        student_data = validated_data.pop('student')
+        sid = student_data['student_id']       
+        student, _ = Student.objects.get_or_create(student_id=sid)
+        reservation = Reservation.objects.create(student=student, **validated_data)
+        return reservation
+
+
+class ContractSerializer(serializers.ModelSerializer):
+    reservation = ReservationSerializer()
+
+    class Meta:
+        model = Contract
+        fields = ["contract_id", "reservation", "date", "contract_status"]
+
+class RatingSerializer(serializers.ModelSerializer):
+    score = serializers.IntegerField(min_value=1, max_value=5)
+    
+    class Meta:
+        model = Rating
+        fields = "__all__"
+        read_only_fields = ('student', 'accommodation', 'created_at', 'updated_at')
+        
+# class NotificationSerializer(serializers.ModelSerializer):
+#     user = UserSerializer()
+#     cedars_specialist = CedarsSpecialistSerializer()
+
+#     class Meta:
+#         model = Notification
+#         fields = ["id", "user", "detail", "is_read", "cedars_specialist"]
