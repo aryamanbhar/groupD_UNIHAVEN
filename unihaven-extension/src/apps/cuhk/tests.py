@@ -6,11 +6,30 @@ from apps.cuhk.models import Accommodation, Reservation, Contract, Student
 class TestAccommodation(APITestCase):
     def setUp(self):
         self.client = APIClient()
-        self.accommodation = Accommodation.objects.create(property_id=1, property_name="CUHK Test Property", status="available")
+        self.accommodation = Accommodation.objects.create(
+            property_id=1,
+            property_name="HKUST Test Property",
+            status="available"
+        )
 
     def test_list_accommodations(self):
         response = self.client.get(reverse("all-accommodations"))
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_modify_accommodation(self):
+        url = reverse("modify-accommodation", kwargs={"pk": self.accommodation.id})
+        updated_data = {
+            "property_name": "HKUST Updated Property",
+            "status": "unavailable"
+        }
+
+        response = self.client.put(url, updated_data, format="json")
+        
+        # Ensure update was successful
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.accommodation.refresh_from_db()
+        self.assertEqual(self.accommodation.property_name, updated_data["property_name"])
+        self.assertEqual(self.accommodation.status, updated_data["status"])
 
 class TestReservation(APITestCase):
     def setUp(self):

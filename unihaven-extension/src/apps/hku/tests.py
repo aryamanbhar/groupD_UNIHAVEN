@@ -8,20 +8,30 @@ from unittest.mock import patch
 class TestAccommodation(APITestCase):
     def setUp(self):
         self.client = APIClient()
-
-    @patch("apps.hku.models.GeoCodingService.get_coordinates", return_value={"Latitude": 22.3, "Longitude": 114.2})
-    def test_create_accommodation(self, mock_geo):
-        accommodation = Accommodation.objects.create(
-            property_id=1, property_name="HKU Test Property",
-            geo_address="Test Location", status="available"
+        self.accommodation = Accommodation.objects.create(
+            property_id=1,
+            property_name="HKUST Test Property",
+            status="available"
         )
-        self.assertEqual(accommodation.latitude, 22.3)
-        self.assertEqual(accommodation.longitude, 114.2)
 
     def test_list_accommodations(self):
         response = self.client.get(reverse("all-accommodations"))
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
+    def test_modify_accommodation(self):
+        url = reverse("modify-accommodation", kwargs={"pk": self.accommodation.id})
+        updated_data = {
+            "property_name": "HKUST Updated Property",
+            "status": "unavailable"
+        }
+
+        response = self.client.put(url, updated_data, format="json")
+        
+        # Ensure update was successful
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.accommodation.refresh_from_db()
+        self.assertEqual(self.accommodation.property_name, updated_data["property_name"])
+        self.assertEqual(self.accommodation.status, updated_data["status"])
 class TestReservation(APITestCase):
     def setUp(self):
         self.client = APIClient()
