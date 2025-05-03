@@ -1,0 +1,1514 @@
+openapi: 3.0.3
+info:
+  title: UniHaven API
+  version: 1.0.0
+  description: API for managing accommodations and reservations.
+paths:
+  /cuhk/accommodations/:
+    get:
+      operationId: cuhk_accommodations_list
+      tags:
+      - cuhk
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Accommodation'
+          description: ''
+  /cuhk/accommodations/{property_id}/rate/:
+    post:
+      operationId: cuhk_accommodations_rate_create
+      parameters:
+      - in: path
+        name: property_id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - cuhk
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AccommodationRating'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/AccommodationRating'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/AccommodationRating'
+        required: true
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AccommodationRating'
+          description: ''
+  /cuhk/accommodations/search/:
+    get:
+      operationId: cuhk_accommodations_search_list
+      parameters:
+      - in: query
+        name: available_from
+        schema:
+          type: string
+          format: date
+        description: Available From (YYYY-MM-DD)
+      - in: query
+        name: available_to
+        schema:
+          type: string
+          format: date
+        description: Available To (YYYY-MM-DD)
+      - in: query
+        name: campus
+        schema:
+          type: string
+        description: Distance To CUHK Campus (Ascending Order)
+      - in: query
+        name: max_price
+        schema:
+          type: number
+      - in: query
+        name: min_price
+        schema:
+          type: number
+      - in: query
+        name: number_of_bedrooms
+        schema:
+          type: integer
+      - in: query
+        name: number_of_beds
+        schema:
+          type: integer
+      - name: ordering
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
+      - name: search
+        required: false
+        in: query
+        description: A search term.
+        schema:
+          type: string
+      - in: query
+        name: type
+        schema:
+          type: string
+      tags:
+      - cuhk
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Accommodation'
+          description: ''
+  /cuhk/accommodations/search/{property_name}/:
+    get:
+      operationId: cuhk_accommodations_search_retrieve
+      parameters:
+      - in: path
+        name: property_name
+        schema:
+          type: string
+        required: true
+      tags:
+      - cuhk
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Accommodation'
+          description: ''
+  /cuhk/accommodations/upload/:
+    get:
+      operationId: cuhk_accommodations_upload_list
+      tags:
+      - cuhk
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Accommodation'
+          description: ''
+    post:
+      operationId: cuhk_accommodations_upload_create
+      tags:
+      - cuhk
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Accommodation'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Accommodation'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Accommodation'
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Accommodation'
+          description: ''
+  /cuhk/cedars_specialists/:
+    get:
+      operationId: cuhk_cedars_specialists_list
+      tags:
+      - cuhk
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/CedarsSpecialist'
+          description: ''
+  /cuhk/cedars_specialists/create/:
+    post:
+      operationId: cuhk_cedars_specialists_create_create
+      tags:
+      - cuhk
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CedarsSpecialist'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/CedarsSpecialist'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/CedarsSpecialist'
+        required: true
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CedarsSpecialist'
+          description: ''
+  /cuhk/contracts/:
+    get:
+      operationId: cuhk_contracts_list
+      tags:
+      - cuhk
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Contract'
+          description: ''
+  /cuhk/reservations/:
+    get:
+      operationId: cuhk_reservations_list
+      tags:
+      - cuhk
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Reservation'
+          description: ''
+  /cuhk/reservations/{student_id}/:
+    get:
+      operationId: cuhk_reservations_list_2
+      parameters:
+      - in: path
+        name: student_id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - cuhk
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Reservation'
+          description: ''
+    delete:
+      operationId: cuhk_reservations_destroy
+      parameters:
+      - in: path
+        name: student_id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - cuhk
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '204':
+          description: No response body
+  /cuhk/reservations/create/:
+    post:
+      operationId: cuhk_reservations_create_create
+      tags:
+      - cuhk
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Reservation'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Reservation'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Reservation'
+        required: true
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Reservation'
+          description: ''
+  /cuhk/students/:
+    get:
+      operationId: cuhk_students_list
+      tags:
+      - cuhk
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Student'
+          description: ''
+  /cuhk/students/create/:
+    post:
+      operationId: cuhk_students_create_create
+      tags:
+      - cuhk
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Student'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Student'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Student'
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Student'
+          description: ''
+  /hku/accommodations/:
+    get:
+      operationId: hku_accommodations_list
+      tags:
+      - hku
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Accommodation'
+          description: ''
+  /hku/accommodations/{property_id}/rate/:
+    post:
+      operationId: hku_accommodations_rate_create
+      parameters:
+      - in: path
+        name: property_id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - hku
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AccommodationRating'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/AccommodationRating'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/AccommodationRating'
+        required: true
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AccommodationRating'
+          description: ''
+  /hku/accommodations/search/:
+    get:
+      operationId: hku_accommodations_search_list
+      parameters:
+      - in: query
+        name: available_from
+        schema:
+          type: string
+          format: date
+        description: Available From (YYYY-MM-DD)
+      - in: query
+        name: available_to
+        schema:
+          type: string
+          format: date
+        description: Available To (YYYY-MM-DD)
+      - in: query
+        name: campus
+        schema:
+          type: string
+        description: Distance To HKU Campus (Ascending Order)
+      - in: query
+        name: max_price
+        schema:
+          type: number
+      - in: query
+        name: min_price
+        schema:
+          type: number
+      - in: query
+        name: number_of_bedrooms
+        schema:
+          type: integer
+      - in: query
+        name: number_of_beds
+        schema:
+          type: integer
+      - name: ordering
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
+      - name: search
+        required: false
+        in: query
+        description: A search term.
+        schema:
+          type: string
+      - in: query
+        name: type
+        schema:
+          type: string
+      tags:
+      - hku
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Accommodation'
+          description: ''
+  /hku/accommodations/search/{name}/:
+    get:
+      operationId: hku_accommodations_search_retrieve
+      parameters:
+      - in: path
+        name: name
+        schema:
+          type: string
+        required: true
+      tags:
+      - hku
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Accommodation'
+          description: ''
+  /hku/accommodations/upload/:
+    get:
+      operationId: hku_accommodations_upload_list
+      tags:
+      - hku
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Accommodation'
+          description: ''
+    post:
+      operationId: hku_accommodations_upload_create
+      tags:
+      - hku
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Accommodation'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Accommodation'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Accommodation'
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Accommodation'
+          description: ''
+  /hku/cedars_specialists/:
+    get:
+      operationId: hku_cedars_specialists_list
+      tags:
+      - hku
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/CedarsSpecialist'
+          description: ''
+  /hku/cedars_specialists/create/:
+    post:
+      operationId: hku_cedars_specialists_create_create
+      tags:
+      - hku
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CedarsSpecialist'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/CedarsSpecialist'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/CedarsSpecialist'
+        required: true
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CedarsSpecialist'
+          description: ''
+  /hku/contracts/:
+    get:
+      operationId: hku_contracts_list
+      tags:
+      - hku
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Contract'
+          description: ''
+  /hku/reservations/:
+    get:
+      operationId: hku_reservations_list
+      tags:
+      - hku
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Reservation'
+          description: ''
+  /hku/reservations/{student_id}/:
+    get:
+      operationId: hku_reservations_list_2
+      parameters:
+      - in: path
+        name: student_id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - hku
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Reservation'
+          description: ''
+    delete:
+      operationId: hku_reservations_destroy
+      parameters:
+      - in: path
+        name: student_id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - hku
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '204':
+          description: No response body
+  /hku/reservations/create/:
+    post:
+      operationId: hku_reservations_create_create
+      tags:
+      - hku
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Reservation'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Reservation'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Reservation'
+        required: true
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Reservation'
+          description: ''
+  /hku/students/:
+    get:
+      operationId: hku_students_list
+      tags:
+      - hku
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Student'
+          description: ''
+  /hku/students/create/:
+    post:
+      operationId: hku_students_create_create
+      tags:
+      - hku
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Student'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Student'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Student'
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Student'
+          description: ''
+  /hkust/accommodations/:
+    get:
+      operationId: hkust_accommodations_list
+      tags:
+      - hkust
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Accommodation'
+          description: ''
+  /hkust/accommodations/{property_id}/rate/:
+    post:
+      operationId: hkust_accommodations_rate_create
+      parameters:
+      - in: path
+        name: property_id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - hkust
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AccommodationRating'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/AccommodationRating'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/AccommodationRating'
+        required: true
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AccommodationRating'
+          description: ''
+  /hkust/accommodations/search/:
+    get:
+      operationId: hkust_accommodations_search_list
+      parameters:
+      - in: query
+        name: available_from
+        schema:
+          type: string
+          format: date
+        description: Available From (YYYY-MM-DD)
+      - in: query
+        name: available_to
+        schema:
+          type: string
+          format: date
+        description: Available To (YYYY-MM-DD)
+      - in: query
+        name: campus
+        schema:
+          type: string
+        description: Distance To HKUST Campus (Ascending Order)
+      - in: query
+        name: max_price
+        schema:
+          type: number
+      - in: query
+        name: min_price
+        schema:
+          type: number
+      - in: query
+        name: number_of_bedrooms
+        schema:
+          type: integer
+      - in: query
+        name: number_of_beds
+        schema:
+          type: integer
+      - name: ordering
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
+      - name: search
+        required: false
+        in: query
+        description: A search term.
+        schema:
+          type: string
+      - in: query
+        name: type
+        schema:
+          type: string
+      tags:
+      - hkust
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Accommodation'
+          description: ''
+  /hkust/accommodations/search/{name}/:
+    get:
+      operationId: hkust_accommodations_search_retrieve
+      parameters:
+      - in: path
+        name: name
+        schema:
+          type: string
+        required: true
+      tags:
+      - hkust
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Accommodation'
+          description: ''
+  /hkust/accommodations/upload/:
+    get:
+      operationId: hkust_accommodations_upload_list
+      tags:
+      - hkust
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Accommodation'
+          description: ''
+    post:
+      operationId: hkust_accommodations_upload_create
+      tags:
+      - hkust
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Accommodation'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Accommodation'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Accommodation'
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Accommodation'
+          description: ''
+  /hkust/api/schema/:
+    get:
+      operationId: hkust_api_schema_retrieve
+      description: |-
+        OpenApi3 schema for this API. Format can be selected via content negotiation.
+
+        - YAML: application/vnd.oai.openapi
+        - JSON: application/vnd.oai.openapi+json
+      parameters:
+      - in: query
+        name: format
+        schema:
+          type: string
+          enum:
+          - json
+          - yaml
+      - in: query
+        name: lang
+        schema:
+          type: string
+          enum:
+          - af
+          - ar
+          - ar-dz
+          - ast
+          - az
+          - be
+          - bg
+          - bn
+          - br
+          - bs
+          - ca
+          - ckb
+          - cs
+          - cy
+          - da
+          - de
+          - dsb
+          - el
+          - en
+          - en-au
+          - en-gb
+          - eo
+          - es
+          - es-ar
+          - es-co
+          - es-mx
+          - es-ni
+          - es-ve
+          - et
+          - eu
+          - fa
+          - fi
+          - fr
+          - fy
+          - ga
+          - gd
+          - gl
+          - he
+          - hi
+          - hr
+          - hsb
+          - hu
+          - hy
+          - ia
+          - id
+          - ig
+          - io
+          - is
+          - it
+          - ja
+          - ka
+          - kab
+          - kk
+          - km
+          - kn
+          - ko
+          - ky
+          - lb
+          - lt
+          - lv
+          - mk
+          - ml
+          - mn
+          - mr
+          - ms
+          - my
+          - nb
+          - ne
+          - nl
+          - nn
+          - os
+          - pa
+          - pl
+          - pt
+          - pt-br
+          - ro
+          - ru
+          - sk
+          - sl
+          - sq
+          - sr
+          - sr-latn
+          - sv
+          - sw
+          - ta
+          - te
+          - tg
+          - th
+          - tk
+          - tr
+          - tt
+          - udm
+          - ug
+          - uk
+          - ur
+          - uz
+          - vi
+          - zh-hans
+          - zh-hant
+      tags:
+      - hkust
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/vnd.oai.openapi:
+              schema:
+                type: object
+                additionalProperties: {}
+            application/yaml:
+              schema:
+                type: object
+                additionalProperties: {}
+            application/vnd.oai.openapi+json:
+              schema:
+                type: object
+                additionalProperties: {}
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+          description: ''
+  /hkust/cedars_specialists/:
+    get:
+      operationId: hkust_cedars_specialists_list
+      tags:
+      - hkust
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/CedarsSpecialist'
+          description: ''
+  /hkust/cedars_specialists/create/:
+    post:
+      operationId: hkust_cedars_specialists_create_create
+      tags:
+      - hkust
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CedarsSpecialist'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/CedarsSpecialist'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/CedarsSpecialist'
+        required: true
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CedarsSpecialist'
+          description: ''
+  /hkust/contracts/:
+    get:
+      operationId: hkust_contracts_list
+      tags:
+      - hkust
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Contract'
+          description: ''
+  /hkust/reservations/:
+    get:
+      operationId: hkust_reservations_list
+      tags:
+      - hkust
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Reservation'
+          description: ''
+  /hkust/reservations/{student_id}/:
+    get:
+      operationId: hkust_reservations_list_2
+      parameters:
+      - in: path
+        name: student_id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - hkust
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Reservation'
+          description: ''
+    delete:
+      operationId: hkust_reservations_destroy
+      parameters:
+      - in: path
+        name: student_id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - hkust
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '204':
+          description: No response body
+  /hkust/reservations/create/:
+    post:
+      operationId: hkust_reservations_create_create
+      tags:
+      - hkust
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Reservation'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Reservation'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Reservation'
+        required: true
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Reservation'
+          description: ''
+  /hkust/students/:
+    get:
+      operationId: hkust_students_list
+      tags:
+      - hkust
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Student'
+          description: ''
+  /hkust/students/create/:
+    post:
+      operationId: hkust_students_create_create
+      tags:
+      - hkust
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Student'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Student'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Student'
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Student'
+          description: ''
+  /login/:
+    post:
+      operationId: login_create
+      description: |-
+        Custom login view to authenticate users and generate a custom token
+        with university and role information.
+      tags:
+      - login
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          description: No response body
+  /register/:
+    post:
+      operationId: register_create
+      tags:
+      - register
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          description: No response body
+components:
+  schemas:
+    Accommodation:
+      type: object
+      properties:
+        property_id:
+          type: integer
+          readOnly: true
+        property_name:
+          type: string
+          maxLength: 100
+        image:
+          type: string
+          format: uri
+          nullable: true
+        type:
+          type: string
+          maxLength: 100
+        owner_info:
+          type: string
+        longitude:
+          type: number
+          format: double
+        latitude:
+          type: number
+          format: double
+        area:
+          type: string
+          maxLength: 100
+        distance: {}
+        price:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,8}(?:\.\d{0,2})?$
+        number_of_beds:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: -9223372036854775808
+          format: int64
+        number_of_bedrooms:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: -9223372036854775808
+          format: int64
+        availability_start:
+          type: string
+          format: date
+        availability_end:
+          type: string
+          format: date
+        create_date:
+          type: string
+          format: date-time
+          readOnly: true
+        status:
+          $ref: '#/components/schemas/StatusEnum'
+        room_number:
+          type: string
+          nullable: true
+          default: ''
+          maxLength: 50
+        flat_number:
+          type: string
+          default: ''
+          maxLength: 50
+        floor_number:
+          type: string
+          default: ''
+          maxLength: 50
+        geo_address:
+          type: string
+          default: ''
+        average_rating:
+          type: string
+          readOnly: true
+      required:
+      - average_rating
+      - create_date
+      - property_id
+    AccommodationRating:
+      type: object
+      properties:
+        rating:
+          type: integer
+          maximum: 5
+          minimum: 0
+      required:
+      - rating
+    CedarsSpecialist:
+      type: object
+      properties:
+        email:
+          type: string
+          format: email
+          maxLength: 254
+        cedars_specialist_id:
+          type: integer
+          readOnly: true
+      required:
+      - cedars_specialist_id
+      - email
+    Contract:
+      type: object
+      properties:
+        contract_id:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: -9223372036854775808
+          format: int64
+        reservation:
+          $ref: '#/components/schemas/Reservation'
+        date:
+          type: string
+          format: date
+        contract_status:
+          $ref: '#/components/schemas/ContractStatusEnum'
+      required:
+      - contract_id
+      - reservation
+    ContractStatusEnum:
+      enum:
+      - unsigned
+      - signed
+      - failed
+      type: string
+      description: |-
+        * `unsigned` - unsigned
+        * `signed` - Signed
+        * `failed` - Failed
+    Reservation:
+      type: object
+      properties:
+        reservation_id:
+          type: integer
+          readOnly: true
+        name:
+          type: string
+        contact:
+          type: string
+        student_id:
+          type: string
+        accommodation:
+          type: integer
+        start_date:
+          type: string
+          format: date
+        end_date:
+          type: string
+          format: date
+        status:
+          type: string
+          readOnly: true
+      required:
+      - accommodation
+      - contact
+      - name
+      - reservation_id
+      - status
+      - student_id
+    StatusEnum:
+      enum:
+      - available
+      - reserved
+      type: string
+      description: |-
+        * `available` - Available
+        * `reserved` - Reserved
+    Student:
+      type: object
+      properties:
+        student_id:
+          type: string
+          maxLength: 255
+        name:
+          type: string
+          maxLength: 255
+        contact:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: -9223372036854775808
+          format: int64
+  securitySchemes:
+    basicAuth:
+      type: http
+      scheme: basic
+    cookieAuth:
+      type: apiKey
+      in: cookie
+      name: sessionid
