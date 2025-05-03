@@ -47,9 +47,11 @@ class AccommodationSearch(generics.ListAPIView):
 
     def get_queryset(self):
         queryset = Accommodation.objects.filter(status="available")
+        ordering = self.request.query_params.get('ordering', 'distance')  # Default to 'distance'
+        queryset = queryset.order_by(ordering)
 
-        if not self.request.query_params.get('ordering'):
-            queryset = queryset.order_by('distance')  # Default: ascending
+        # if not self.request.query_params.get('ordering'):
+        #     queryset = queryset.order_by('distance')  # Default: ascending
         
         return queryset
 
@@ -57,10 +59,7 @@ class AccommodationSearch(generics.ListAPIView):
 class AccommodationDetail(generics.RetrieveAPIView):
     queryset = Accommodation.objects.all()
     serializer_class = AccommodationSerializer
-    lookup_field = 'geo_address'
-
-
-
+    lookup_field = 'property_name'
 
 #RESERVATION
 
@@ -91,13 +90,6 @@ class ReservationStudentViewOrCancel(generics.ListAPIView):
 
 
     def delete(self, request, student_id):
-        # Find the student's reservation
-        # try:
-        #     reservation = Reservation.objects.get(student__student_id=student_id)
-        # except Reservation.DoesNotExist:
-        #     return Response({"error": "Reservation not found."}, status=status.HTTP_404_NOT_FOUND)
-
-        # Delete the reservation
         try:
             reservation = Reservation.objects.get(student__student_id=student_id)
         except Reservation.DoesNotExist:

@@ -12,7 +12,7 @@ urlpatterns = [
 
     path('accommodations/upload/', AccommodationUpload.as_view(), name='accommodation-list'),  
     path('accommodations/search/', AccommodationSearch.as_view(), name='accommodation-search'),
-    path('accommodations/search/<str:name>/', AccommodationDetail.as_view(), name='accommodation-detail'),
+    path('accommodations/search/<str:property_name>/', AccommodationDetail.as_view(), name='accommodation-detail'),
     path('accommodations/<int:property_id>/rate/', AccommodationRateView.as_view(), name='accommodation-rate'),
 
     #cedars

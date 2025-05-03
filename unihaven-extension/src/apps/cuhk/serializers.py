@@ -53,10 +53,12 @@ class ReservationSerializer(serializers.ModelSerializer):
     # accept a student_id in payload instead of nested student object
     # student_id = serializers.CharField(write_only=True)
 
+    accommodation = serializers.PrimaryKeyRelatedField(queryset=Accommodation.objects.all())
     name = serializers.CharField(source='student.name')
     contact = serializers.CharField(source='student.contact')
     student_id = serializers.CharField(source='student.student_id')
     status = serializers.CharField(read_only=True)
+
 
     class Meta:
         model = Reservation
