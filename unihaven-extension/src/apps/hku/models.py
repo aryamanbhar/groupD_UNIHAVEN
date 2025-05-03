@@ -63,13 +63,12 @@ class Accommodation(models.Model):
         unique_together = ('room_number', 'flat_number', 'floor_number', 'geo_address')
 
     def save(self, *args, **kwargs):
-        geo_data = GeoCodingService.get_coordinates(self.geo_address)
-        if geo_data and geo_data.get("Latitude") and geo_data.get("Longitude"):
-            self.latitude = float(geo_data.get("Latitude"))
-            self.longitude = float(geo_data.get("Longitude"))
-        else:
-            self.latitude = 0.0  # Fallback values
-            self.longitude = 0.0
+        # Automatically fetch latitude and longitude if not provided
+        if not self.latitude or not self.longitude:
+            geo_data = GeoCodingService.get_coordinates(self.geo_address)
+            if geo_data:
+                self.latitude = geo_data['latitude']
+                self.longitude = geo_data['longitude']
 
         self.distance = self.calculate_distance()
         super().save(*args, **kwargs)
@@ -80,8 +79,12 @@ class Accommodation(models.Model):
         Uses the Equirectangular approximation formula.
         """
         radius_of_earth_km = 6371
-        CUHK_CAMPUSES = {
-            "Main Campus": {"latitude": 22.41907, "longitude": 114.20693},
+        HKU_CAMPUSES = {
+            "Main Campus": {"latitude": 22.28405, "longitude": 114.13784}, 
+            "Sassoon Road Campus": {"latitude": 22.2675, "longitude": 114.12881},
+            "Swire Institute of Marine Science": {"latitude": 22.20805, "longitude": 114.26021},
+            "Kadoorie Centre": {"latitude": 22.43022, "longitude": 114.11429},
+            "Faculty of Dentistry": {"latitude": 22.28649, "longitude": 114.14426},
         }
 
         def equirectangular(lat1, lon1, lat2, lon2):
@@ -90,7 +93,7 @@ class Accommodation(models.Model):
             return math.sqrt(x**2 + y**2) * radius_of_earth_km
 
         formatted_distances = []
-        for campus, coords in CUHK_CAMPUSES.items():
+        for campus, coords in HKU_CAMPUSES.items():
             distance = equirectangular(self.latitude, self.longitude, coords["latitude"], coords["longitude"])
             formatted_distances.append(f"The distance to {campus} is {distance:.2f} km.")
 
