@@ -20,6 +20,7 @@ from .serializers import (
 from common.utils.permissions import IsCUHK, IsStaff, IsStudent, IsAdmin
 
 
+
 #ACCOMMODATIONS
 
 class AccommodationsViewAll(generics.ListAPIView):
@@ -95,12 +96,17 @@ class ReservationStudentViewOrCancel(generics.ListAPIView):
         except Reservation.DoesNotExist:
             return Response({"error": "Reservation not found."}, status=status.HTTP_404_NOT_FOUND)
 
+        reservation.status = 'cancelled'
+        reservation.save()
         accommodation = reservation.accommodation
         accommodation.status = 'available'
         accommodation.save()
-        
+
         reservation.delete()
+
         return Response({"message": "Reservation cancelled successfully."}, status=status.HTTP_204_NO_CONTENT)
+    
+        
     
         serializer_class.save(status='reserved')
 
