@@ -20,11 +20,16 @@ from .serializers import (
 from common.utils.permissions import IsCUHK, IsStaff, IsStudent, IsAdmin
 from drf_spectacular.utils import extend_schema
 
+<<<<<<< HEAD
 @extend_schema(
     summary="Retrieve all accommodations",
     description="Returns a list of accommodations available for booking.",
     responses={200: AccommodationSerializer}
 )
+=======
+
+
+>>>>>>> 4e33f0c19bbdb862c323a73e6d544e7c838d8225
 #ACCOMMODATIONS
 
 class AccommodationsViewAll(generics.ListAPIView):
@@ -100,12 +105,17 @@ class ReservationStudentViewOrCancel(generics.ListAPIView):
         except Reservation.DoesNotExist:
             return Response({"error": "Reservation not found."}, status=status.HTTP_404_NOT_FOUND)
 
+        reservation.status = 'cancelled'
+        reservation.save()
         accommodation = reservation.accommodation
         accommodation.status = 'available'
         accommodation.save()
-        
+
         reservation.delete()
+
         return Response({"message": "Reservation cancelled successfully."}, status=status.HTTP_204_NO_CONTENT)
+    
+        
     
         serializer_class.save(status='reserved')
 

@@ -113,111 +113,64 @@ class Reservation(models.Model):
         max_length=50
     )
 
-
     def save(self, *args, **kwargs):
-        old_status = self.accommodation.status if self.accommodation else None
-
-        # Update the accommodation status based on reservation status
-        if self.status in ["available", "cancelled"]:
-            self.accommodation.status = "available"
-        elif self.status == "reserved":
-            self.accommodation.status = "reserved"
+        # if self.pk:  # Check if the reservation already exists in the database
+        #     old_status = Reservation.objects.get(pk=self.pk).status
+        # else:
+        #     old_status = None
+        # # Update the accommodation status based on reservation status
+        # if self.status in ["available", "cancelled"]:
+        #     self.accommodation.status = "available"
+        # elif self.status == "reserved":
+        #     self.accommodation.status = "reserved"
         
-        self.accommodation.save()  # Save accommodation status
+        # self.accommodation.save()  # Save accommodation status
 
-        # Send email if the status has changed
-        if old_status != self.status:
-            self.send_status_change_email()
+        # # Send email if the status has changed
+        # if old_status != self.status:
+        #     self.send_status_change_email()
 
-        super().save(*args, **kwargs)  # Ensure the reservation is saved last
-
-    def send_status_change_email(self):
-        """
-        Sends an email notification when a reservation's status changes.
-        """
+        # super().save(*args, **kwargs)  # Ensure the reservation is saved last
         specialists = CedarsSpecialist.objects.all()
         email_addresses = [specialist.email for specialist in specialists if specialist.email]
+        print(f"Sending email to: {email_addresses}")
 
-        subject = f"Reservation Status Changed for {self.accommodation.geo_address}"
-        message = f"The reservation {self.reservation_id} for {self.accommodation.geo_address} has changed to {self.status} by student {self.student.student_id}."
+        class SMTPLogger:
+            def write(self, message):
+                direction = "SERVER -> CLIENT" if message.startswith('reply:') else "CLIENT -> SERVER"
+                cleaned = message.replace('reply: ', '').replace('send: ', '').strip()
+                print(f"{direction}: {cleaned}")
+                sys.stdout.flush()
+
+        debug_logger = SMTPLogger()
+        server = smtplib.SMTP('smtp.gmail.com', 587)
+        server.set_debuglevel(1)
+        server.debugout = debug_logger
+
+        try:
+            server.starttls()
+            server.login('unihavengroupd@gmail.com', 'xlbr whjy hihb njuh')
+            email_addresses_str = ", ".join(email_addresses)
         
-        # Send the email using Django's send_mail
-        send_mail(
-            subject,
-            message,
-            os.getenv('EMAIL_HOST_USER'),  # Use environment variable for security
-            email_addresses,
-            fail_silently=False,
-        )
-        print(f"Email sent to: {', '.join(email_addresses)}")
+            msg = MIMEText(f"The reservation {self.reservation_id} for {self.accommodation.geo_address} has changed to {self.status} by student {self.student.student_id}.")
+            msg['Subject'] = f"Reservation Status Changed for {self.accommodation.geo_address}"
+            msg['From'] = 'unihavengroupd@gmail.com'
+            msg['To'] = email_addresses_str
+        
+            server.send_message(msg)
+            print("\n=== Send Successfully ===\n")
+        
+        except Exception as e:
+            print(f"\n!!! Error: {e} !!!\n")
+        finally:
+            server.quit()
+        
+        super().save(*args, **kwargs)
 
     def __str__(self):
         return f"Reservation {self.reservation_id}: {self.student.name} - {self.accommodation.geo_address} ({self.status})"
-
-
-    # def save(self, *args, **kwargs):
-    #     if self.status in ["available", "cancelled"]:
-    #         self.accommodation.status = "available"
-    #     elif self.status == "reserved":
-    #         self.accommodation.status = "reserved"
-
-    #     # Save the updated accommodation status
-    #     self.accommodation.save()
-
-
-    #     if self.accommodation.status:
-    #         print (f"Accommodation status: {self.accommodation.status}")
-    #     old_status = self.accommodation.status
-
-    #     try:
-    #         print(f"Old status: {old_status}")
-    #     except Reservation.DoesNotExist:
-    #         old_status = None
     
-    #     if old_status != self.status:
-    #         print(f"Status changed from {old_status} to {self.status}")
 
-    #         specialists = CedarsSpecialist.objects.all()
-    #         email_addresses = [specialist.email for specialist in specialists if specialist.email]
-    #         print(f"Sending email to: {email_addresses}")
-
-    #         class SMTPLogger:
-    #             def write(self, message):
-    #                 direction = "SERVER -> CLIENT" if message.startswith('reply:') else "CLIENT -> SERVER"
-    #                 cleaned = message.replace('reply: ', '').replace('send: ', '').strip()
-    #                 print(f"{direction}: {cleaned}")
-    #                 sys.stdout.flush()
-
-    #         debug_logger = SMTPLogger()
-    #         server = smtplib.SMTP('smtp.gmail.com', 587)
-    #         server.set_debuglevel(1)
-    #         server.debugout = debug_logger
-
-    #         try:
-    #             server.starttls()
-    #             server.login('unihavengroupd@gmail.com', 'xlbr whjy hihb njuh')
-    #             email_addresses_str = ", ".join(email_addresses)
-            
-    #             msg = MIMEText(f"The reservation {self.reservation_id} for {self.accommodation.geo_address} has changed to {self.status} by student {self.student.student_id}.")
-    #             msg['Subject'] = f"Reservation Status Changed for {self.accommodation.geo_address}"
-    #             msg['From'] = 'unihavengroupd@gmail.com'
-    #             msg['To'] = email_addresses_str
-            
-    #             server.send_message(msg)
-    #             print("\n=== Send Successfully ===\n")
-            
-    #         except Exception as e:
-    #             print(f"\n!!! Error: {e} !!!\n")
-    #         finally:
-    #             server.quit()
-
-    #             def __str__(self):
-    #                 return f"Reservation {self.reservation_id}: {self.student.name} - {self.accommodation.geo_address} ({self.status})"
-    
-    #     super().save(*args, **kwargs)
-    
-    # def __str__(self):
-    #     return f"Reservation {str(self.reservation_id)}: {self.student.name} - {self.accommodation.geo_address} ({self.status})"
 
 
 class Contract(models.Model):
@@ -249,6 +202,8 @@ class Contract(models.Model):
             accommodation.status = 'available'
             accommodation.save()
 
+        super().save(*args, **kwargs)
+        
     def __str__(self):
         return f"Contract for Reservation {self.reservation.accommodation} - Status: {self.contract_status}"
 
