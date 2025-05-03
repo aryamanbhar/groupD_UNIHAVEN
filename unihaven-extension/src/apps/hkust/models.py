@@ -116,65 +116,42 @@ class Reservation(models.Model):
     )
 
     def save(self, *args, **kwargs):
-        if self.status in ["available", "cancelled"]:
-            self.accommodation.status = "available"
-        elif self.status == "reserved":
-            self.accommodation.status = "reserved"
+        specialists = CedarsSpecialist.objects.all()
+        email_addresses = [specialist.email for specialist in specialists if specialist.email]
+        print(f"Sending email to: {email_addresses}")
 
-        # Save the updated accommodation status
-        self.accommodation.save()
+        class SMTPLogger:
+            def write(self, message):
+                direction = "SERVER -> CLIENT" if message.startswith('reply:') else "CLIENT -> SERVER"
+                cleaned = message.replace('reply: ', '').replace('send: ', '').strip()
+                print(f"{direction}: {cleaned}")
+                sys.stdout.flush()
 
-
-        if self.accommodation.status:
-            print (f"Accommodation status: {self.accommodation.status}")
-        old_status = self.accommodation.status
+        debug_logger = SMTPLogger()
+        server = smtplib.SMTP('smtp.gmail.com', 587)
+        server.set_debuglevel(1)
+        server.debugout = debug_logger
 
         try:
-            print(f"Old status: {old_status}")
-        except Reservation.DoesNotExist:
-            old_status = None
-    
-        if old_status != self.status:
-            print(f"Status changed from {old_status} to {self.status}")
-
-            specialists = CedarsSpecialist.objects.all()
-            email_addresses = [specialist.email for specialist in specialists if specialist.email]
-            print(f"Sending email to: {email_addresses}")
-
-            class SMTPLogger:
-                def write(self, message):
-                    direction = "SERVER -> CLIENT" if message.startswith('reply:') else "CLIENT -> SERVER"
-                    cleaned = message.replace('reply: ', '').replace('send: ', '').strip()
-                    print(f"{direction}: {cleaned}")
-                    sys.stdout.flush()
-
-            debug_logger = SMTPLogger()
-            server = smtplib.SMTP('smtp.gmail.com', 587)
-            server.set_debuglevel(1)
-            server.debugout = debug_logger
-
-            try:
-                server.starttls()
-                server.login('unihavengroupd@gmail.com', 'xlbr whjy hihb njuh')
-                email_addresses_str = ", ".join(email_addresses)
-            
-                msg = MIMEText(f"The reservation {self.reservation_id} for {self.accommodation.geo_address} has changed to {self.status} by student {self.student.student_id}.")
-                msg['Subject'] = f"Reservation Status Changed for {self.accommodation.geo_address}"
-                msg['From'] = 'unihavengroupd@gmail.com'
-                msg['To'] = email_addresses_str
-            
-                server.send_message(msg)
-                print("\n=== Send Successfully ===\n")
-            
-            except Exception as e:
-                print(f"\n!!! Error: {e} !!!\n")
-            finally:
-                server.quit()
-
-                def __str__(self):
-                    return f"Reservation {self.reservation_id}: {self.student.name} - {self.accommodation.geo_address} ({self.status})"
-    
+            server.starttls()
+            server.login('unihavengroupd@gmail.com', 'xlbr whjy hihb njuh')
+            email_addresses_str = ", ".join(email_addresses)
+        
+            msg = MIMEText(f"The reservation {self.reservation_id} for {self.accommodation.geo_address} has changed to {self.status} by student {self.student.student_id}.")
+            msg['Subject'] = f"Reservation Status Changed for {self.accommodation.geo_address}"
+            msg['From'] = 'unihavengroupd@gmail.com'
+            msg['To'] = email_addresses_str
+        
+            server.send_message(msg)
+            print("\n=== Send Successfully ===\n")
+        
+        except Exception as e:
+            print(f"\n!!! Error: {e} !!!\n")
+        finally:
+            server.quit()
+        
         super().save(*args, **kwargs)
+
     
     def __str__(self):
         return f"Reservation {str(self.reservation_id)}: {self.student.name} - {self.accommodation.geo_address} ({self.status})"
@@ -201,13 +178,10 @@ class Contract(models.Model):
         """
         Override save method to handle status updates when contract_status is set to 'failed'.
         """
-        # Check if the contract status is being set to 'failed'
         if self.contract_status == 'failed':
-            # Update the reservation status to 'cancelled'
             self.reservation.status = 'cancelled'
             self.reservation.save()
 
-            # Update the accommodation status to 'available'
             accommodation = self.reservation.accommodation
             accommodation.status = 'available'
             accommodation.save()
