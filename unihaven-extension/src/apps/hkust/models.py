@@ -78,8 +78,8 @@ class Accommodation(models.Model):
         Uses the Equirectangular approximation formula.
         """
         radius_of_earth_km = 6371
-        CUHK_CAMPUSES = {
-            "Main Campus": {"latitude": 22.41907, "longitude": 114.20693},
+        HKUST_CAMPUSES = {
+            "Main Campus": {"latitude": 22.33584, "longitude": 114.26355},
         }
 
         def equirectangular(lat1, lon1, lat2, lon2):
@@ -88,11 +88,12 @@ class Accommodation(models.Model):
             return math.sqrt(x**2 + y**2) * radius_of_earth_km
 
         formatted_distances = []
-        for campus, coords in CUHK_CAMPUSES.items():
+        for campus, coords in HKUST_CAMPUSES.items():
             distance = equirectangular(self.latitude, self.longitude, coords["latitude"], coords["longitude"])
             formatted_distances.append(f"The distance to {campus} is {distance:.2f} km.")
 
         return formatted_distances
+
 
 
     def __str__(self):
