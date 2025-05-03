@@ -3,9 +3,25 @@ info:
   title: UniHaven API
   version: 1.0.0
   description: API for managing accommodations and reservations.
+
+tags:
+  - name: accommodations
+    description: Endpoints for managing accommodations available for reservation.
+  - name: reservations
+    description: APIs for creating, viewing, and canceling reservations.
+  - name: contracts
+    description: Handles contracts associated with reservations.
+  - name: specialists
+    description: Manages CEDARS specialists responsible for accommodation oversight.
+  - name: students
+    description: Provides student account management functionalities.
+  - name: authentication
+    description: User login and registration endpoints.
+  
 paths:
   /cuhk/accommodations/:
     get:
+      summary: Lists accommodations offered by CUHK
       operationId: cuhk_accommodations_list
       tags:
       - cuhk
@@ -24,6 +40,7 @@ paths:
           description: ''
   /cuhk/accommodations/{property_id}/rate/:
     post:
+      summary: Rate the accommodation with the given property id
       operationId: cuhk_accommodations_rate_create
       parameters:
       - in: path
@@ -58,6 +75,7 @@ paths:
           description: ''
   /cuhk/accommodations/search/:
     get:
+      summary: Filter
       operationId: cuhk_accommodations_search_list
       parameters:
       - in: query
@@ -126,6 +144,7 @@ paths:
           description: ''
   /cuhk/accommodations/search/{property_name}/:
     get:
+      summary: Search the given accommodation
       operationId: cuhk_accommodations_search_retrieve
       parameters:
       - in: path
@@ -165,6 +184,7 @@ paths:
                   $ref: '#/components/schemas/Accommodation'
           description: ''
     post:
+      summary: Uploads an accommodation listing
       operationId: cuhk_accommodations_upload_create
       tags:
       - cuhk
@@ -256,6 +276,7 @@ paths:
           description: ''
   /cuhk/reservations/:
     get:
+      summary: View the reservations made by CUHK students
       operationId: cuhk_reservations_list
       tags:
       - cuhk
@@ -274,6 +295,7 @@ paths:
           description: ''
   /cuhk/reservations/{student_id}/:
     get:
+      summary: View the reservations of a student with the given student id
       operationId: cuhk_reservations_list_2
       parameters:
       - in: path
@@ -315,6 +337,7 @@ paths:
           description: No response body
   /cuhk/reservations/create/:
     post:
+      summary: Make a reservation for an accommodation
       operationId: cuhk_reservations_create_create
       tags:
       - cuhk
@@ -388,6 +411,7 @@ paths:
           description: ''
   /hku/accommodations/:
     get:
+      summary: Lists accommodations offered by HKU
       operationId: hku_accommodations_list
       tags:
       - hku
@@ -406,6 +430,7 @@ paths:
           description: ''
   /hku/accommodations/{property_id}/rate/:
     post:
+      summary: Rate the accommodation with the given property id
       operationId: hku_accommodations_rate_create
       parameters:
       - in: path
@@ -440,6 +465,7 @@ paths:
           description: ''
   /hku/accommodations/search/:
     get:
+      summary: Search accommodations with filters
       operationId: hku_accommodations_search_list
       parameters:
       - in: query
@@ -508,6 +534,7 @@ paths:
           description: ''
   /hku/accommodations/search/{name}/:
     get:
+      summary: Search the given accommodation
       operationId: hku_accommodations_search_retrieve
       parameters:
       - in: path
@@ -547,6 +574,7 @@ paths:
                   $ref: '#/components/schemas/Accommodation'
           description: ''
     post:
+      summary: Uploads an accommodation listing
       operationId: hku_accommodations_upload_create
       tags:
       - hku
@@ -638,6 +666,7 @@ paths:
           description: ''
   /hku/reservations/:
     get:
+      summary: View the reservations made by CUHK students
       operationId: hku_reservations_list
       tags:
       - hku
@@ -656,6 +685,7 @@ paths:
           description: ''
   /hku/reservations/{student_id}/:
     get:
+      summary: View the reservations of a student with the given student id
       operationId: hku_reservations_list_2
       parameters:
       - in: path
@@ -697,6 +727,7 @@ paths:
           description: No response body
   /hku/reservations/create/:
     post:
+      summary: Make a reservation for an accommodation
       operationId: hku_reservations_create_create
       tags:
       - hku
@@ -770,6 +801,7 @@ paths:
           description: ''
   /hkust/accommodations/:
     get:
+      summary: Lists accommodations offered by HKUST
       operationId: hkust_accommodations_list
       tags:
       - hkust
@@ -788,6 +820,7 @@ paths:
           description: ''
   /hkust/accommodations/{property_id}/rate/:
     post:
+      summary: Rate the accommodation with the given property id
       operationId: hkust_accommodations_rate_create
       parameters:
       - in: path
@@ -822,6 +855,7 @@ paths:
           description: ''
   /hkust/accommodations/search/:
     get:
+      summary: Search accommodations with filters
       operationId: hkust_accommodations_search_list
       parameters:
       - in: query
@@ -890,6 +924,7 @@ paths:
           description: ''
   /hkust/accommodations/search/{name}/:
     get:
+      summary: Search the given accommodation
       operationId: hkust_accommodations_search_retrieve
       parameters:
       - in: path
@@ -929,6 +964,7 @@ paths:
                   $ref: '#/components/schemas/Accommodation'
           description: ''
     post:
+      summary: Uploads an accommodation listing
       operationId: hkust_accommodations_upload_create
       tags:
       - hkust
@@ -1166,6 +1202,7 @@ paths:
           description: ''
   /hkust/reservations/:
     get:
+      summary: View the reservations made by HKUST students
       operationId: hkust_reservations_list
       tags:
       - hkust
@@ -1184,6 +1221,7 @@ paths:
           description: ''
   /hkust/reservations/{student_id}/:
     get:
+      summary: View the reservations of a student with the given student id
       operationId: hkust_reservations_list_2
       parameters:
       - in: path
@@ -1225,6 +1263,7 @@ paths:
           description: No response body
   /hkust/reservations/create/:
     post:
+      summary: Make a reservation for an accommodation
       operationId: hkust_reservations_create_create
       tags:
       - hkust
