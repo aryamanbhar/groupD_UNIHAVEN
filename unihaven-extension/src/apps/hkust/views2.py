@@ -18,7 +18,13 @@ from .serializers import (
     ReservationSerializer, ContractSerializer, RatingSerializer, AccommodationRatingSerializer
 )
 from common.utils.permissions import IsCUHK, IsStaff, IsStudent, IsAdmin
+from drf_spectacular.utils import extend_schema
 
+@extend_schema(
+    summary="Retrieve all accommodations",
+    description="Returns a list of accommodations available for booking.",
+    responses={200: AccommodationSerializer}
+)
 
 #ACCOMMODATIONS
 
