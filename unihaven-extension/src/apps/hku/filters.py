@@ -20,7 +20,7 @@ class AccommodationFilter(django_filters.FilterSet):
 
     campus = django_filters.CharFilter(
         method='filter_by_campus',
-        label='Distance To HKU Campus (Ascending Order)'
+        label='Distance To HKU Campus (Ascending Order) Please enter the campus name as listed : Main Campus, Sassoon Road Campus, Swire Institute of Marine Science, Kadoorie Centre, Faculty of Dentistry'
     )
 
 
@@ -102,12 +102,11 @@ class AccommodationFilter(django_filters.FilterSet):
             sorted_accommodations = sorted(queryset, key=get_selected_campus_distance)
             print("Sorted accommodations:", sorted_accommodations)
 
-            sorted_ids = [accommodation.id for accommodation in sorted_accommodations]
+            sorted_ids = [accommodation.property_id for accommodation in sorted_accommodations]
             print("Sorted IDs:", sorted_ids)
-            preserved_order = Case(*[When(id=pk, then=pos) for pos, pk in enumerate(sorted_ids)])
-            return queryset.filter(id__in=sorted_ids).order_by(preserved_order)
+            preserved_order = Case(*[When(property_id=pk, then=pos) for pos, pk in enumerate(sorted_ids)])
+            return queryset.filter(property_id__in=sorted_ids).order_by(preserved_order)
         
         return queryset
         
-        
-        return queryset
+    

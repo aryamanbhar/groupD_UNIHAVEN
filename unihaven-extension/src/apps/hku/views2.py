@@ -111,6 +111,7 @@ class ReservationStudentViewOrCancel(generics.ListAPIView):
 
         reservation.status = 'cancelled'
         reservation.save()
+        reservation.send_status_change_email()
         accommodation = reservation.accommodation
         accommodation.status = 'available'
         accommodation.save()

@@ -131,6 +131,20 @@ class Reservation(models.Model):
         #     self.send_status_change_email()
 
         # super().save(*args, **kwargs)  # Ensure the reservation is saved last
+        if self.status in ["available", "cancelled"]:
+            self.accommodation.status = "available"
+        elif self.status == "reserved":
+            self.accommodation.status = "reserved"
+ 
+         # Save the updated accommodation status
+        self.accommodation.save()
+
+        if not self.pk:
+            self.send_status_change_email()
+        
+        super().save(*args, **kwargs)
+
+    def send_status_change_email(self):
         specialists = CedarsSpecialist.objects.all()
         email_addresses = [specialist.email for specialist in specialists if specialist.email]
         print(f"Sending email to: {email_addresses}")
@@ -164,8 +178,6 @@ class Reservation(models.Model):
             print(f"\n!!! Error: {e} !!!\n")
         finally:
             server.quit()
-        
-        super().save(*args, **kwargs)
 
     def __str__(self):
         return f"Reservation {self.reservation_id}: {self.student.name} - {self.accommodation.geo_address} ({self.status})"
@@ -197,6 +209,7 @@ class Contract(models.Model):
         if self.contract_status == 'failed':
             self.reservation.status = 'cancelled'
             self.reservation.save()
+            self.reservation.send_status_change_email()
 
             accommodation = self.reservation.accommodation
             accommodation.status = 'available'
