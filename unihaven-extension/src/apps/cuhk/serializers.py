@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from .models import (
     CedarsSpecialist, Accommodation, Student, Reservation,
-    Contract, Rating
+    Contract
 )
 
 # class UserSerializer(serializers.ModelSerializer):
@@ -106,13 +106,13 @@ class ContractSerializer(serializers.ModelSerializer):
         model = Contract
         fields = ["contract_id", "reservation", "date", "contract_status"]
 
-class RatingSerializer(serializers.ModelSerializer):
-    score = serializers.IntegerField(min_value=1, max_value=5)
+# class RatingSerializer(serializers.ModelSerializer):
+#     score = serializers.IntegerField(min_value=1, max_value=5)
     
-    class Meta:
-        model = Rating
-        fields = "__all__"
-        read_only_fields = ('student', 'accommodation', 'created_at', 'updated_at')
+#     class Meta:
+#         model = Rating
+#         fields = "__all__"
+#         read_only_fields = ('student', 'accommodation', 'created_at', 'updated_at')
         
 # class NotificationSerializer(serializers.ModelSerializer):
 #     user = UserSerializer()

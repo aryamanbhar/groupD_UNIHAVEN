@@ -220,41 +220,6 @@ class Contract(models.Model):
     def __str__(self):
         return f"Contract for Reservation {self.reservation.accommodation} - Status: {self.contract_status}"
 
-class Rating(models.Model):
-        student = models.ForeignKey(
-            'Student', 
-            on_delete=models.CASCADE,
-            related_name='student_ratings'
-        )
-        accommodation = models.ForeignKey(
-            'Accommodation',
-            on_delete=models.CASCADE,
-            related_name='accommodation_ratings'
-        )
-        score = models.IntegerField(
-            choices=[(i, f"{i}") for i in range(1, 6)],
-            validators=[
-                MinValueValidator(1),
-                MaxValueValidator(5)
-            ]
-        )
-        comment = models.TextField(blank=True)
-        photo = models.ImageField(
-            upload_to='rating_photos/',
-            blank=True,
-            null=True
-        )
-        created_at = models.DateTimeField(auto_now_add=True)
-        updated_at = models.DateTimeField(auto_now=True)
+class UploadedImage(models.Model):
+    image = models.ImageField(upload_to='rating_images/')
 
-class Meta:
-        unique_together = ['student', 'accommodation']
-
-def __str__(self):
-        return f"{self.student.name}'s rating ({self.score}) for {self.accommodation.geo_address}"
-
-# class Notification(models.Model):
-#     student = models.ForeignKey('Student', on_delete=models.CASCADE, default=1)
-#     detail = models.TextField(default='')  # added default
-#     is_read = models.BooleanField(default=False)
-#     cedars_specialist = models.ForeignKey('CedarsSpecialist', on_delete=models.CASCADE, default=1)  # Make sure ID 1 exists!

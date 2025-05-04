@@ -11,11 +11,11 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.exceptions import PermissionDenied
 from .models import (
     CedarsSpecialist, Accommodation, Reservation,
-    Contract, Rating, Student
+    Contract, Student
 )
 from .serializers import (
     CedarsSpecialistSerializer, AccommodationSerializer, StudentSerializer,
-    ReservationSerializer, ContractSerializer, RatingSerializer, AccommodationRatingSerializer
+    ReservationSerializer, ContractSerializer, AccommodationRatingSerializer
 )
 from common.utils.permissions import IsCUHK, IsStaff, IsStudent, IsAdmin
 from drf_spectacular.utils import extend_schema
@@ -143,42 +143,6 @@ class AccommodationRateView(generics.GenericAPIView):
             "new_average_rating": accommodation.average_rating()
         }, status=status.HTTP_200_OK)
 
-
-# class RatingCreateView(generics.CreateAPIView):
-#     queryset = Rating.objects.all()
-#     serializer_class = RatingSerializer
-    
-#     def perform_create(self, serializer):
-#         student = self.request.user.student
-#         accommodation_id = self.request.data.get('accommodation')
-#         accommodation = get_object_or_404(Accommodation, pk=accommodation_id)
-        
-#         has_contract = Contract.objects.filter(
-#             reservation__student=student,
-#             reservation__accommodation=accommodation,
-#             contract_status='signed'
-#         ).exists()
-            
-#         serializer.save(student=student, accommodation=accommodation)
-
-# class RatingRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
-#     queryset = Rating.objects.all()
-#     serializer_class = RatingSerializer
-#     permission_classes = [IsAuthenticated]
-
-#     def get_object(self):
-#         rating = super().get_object()
-#         if rating.student.user != self.request.user:
-#             raise PermissionDenied("You can only modify your own ratings")
-#         return rating
-
-
-
-# class RatingListView(generics.ListAPIView):
-#     queryset = Rating.objects.all()
-#     serializer_class = RatingSerializer
-#     filter_backends = [DjangoFilterBackend]
-#     filterset_fields = ["score", "student", "accommodation"]
 
 # contracts
 from django.shortcuts import get_object_or_404
