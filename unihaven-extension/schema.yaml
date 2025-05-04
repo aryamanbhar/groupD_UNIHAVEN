@@ -6,17 +6,19 @@ info:
 
 tags:
   - name: accommodations
-    description: Endpoints for managing accommodations available for reservation.
+    description: Endpoints for managing and reserving accommodations.
   - name: reservations
-    description: APIs for creating, viewing, and canceling reservations.
+    description: Endpoints for creating, viewing, and canceling reservations.
   - name: contracts
     description: Handles contracts associated with reservations.
   - name: specialists
-    description: Manages CEDARS specialists responsible for accommodation oversight.
+    description: Manages CEDARS specialists.
   - name: students
-    description: Provides student account management functionalities.
-  - name: authentication
-    description: User login and registration endpoints.
+    description: Manages students.
+  - name: login
+    description: For authentication and permission.
+  - name: register
+    description: To register as a user.
   
 paths:
   /cuhk/accommodations/:
@@ -212,6 +214,7 @@ paths:
           description: ''
   /cuhk/cedars_specialists/:
     get:
+      summary: View all the cedar specialists
       operationId: cuhk_cedars_specialists_list
       tags:
       - cuhk
@@ -230,6 +233,7 @@ paths:
           description: ''
   /cuhk/cedars_specialists/create/:
     post:
+      summary: Enter email address to receive notifications
       operationId: cuhk_cedars_specialists_create_create
       tags:
       - cuhk
@@ -258,6 +262,7 @@ paths:
           description: ''
   /cuhk/contracts/:
     get:
+      summary: View CUHK contracts
       operationId: cuhk_contracts_list
       tags:
       - cuhk
@@ -366,6 +371,7 @@ paths:
           description: ''
   /cuhk/students/:
     get:
+      summary: View the CUHK students
       operationId: cuhk_students_list
       tags:
       - cuhk
@@ -384,6 +390,7 @@ paths:
           description: ''
   /cuhk/students/create/:
     post:
+      summary: Create CUHK student
       operationId: cuhk_students_create_create
       tags:
       - cuhk
@@ -602,6 +609,7 @@ paths:
           description: ''
   /hku/cedars_specialists/:
     get:
+      summary: View all the cedar specialists
       operationId: hku_cedars_specialists_list
       tags:
       - hku
@@ -620,6 +628,7 @@ paths:
           description: ''
   /hku/cedars_specialists/create/:
     post:
+      summary: Enter email address to receive notifications
       operationId: hku_cedars_specialists_create_create
       tags:
       - hku
@@ -648,6 +657,7 @@ paths:
           description: ''
   /hku/contracts/:
     get:
+      summary: View HKU contracts
       operationId: hku_contracts_list
       tags:
       - hku
@@ -756,6 +766,7 @@ paths:
           description: ''
   /hku/students/:
     get:
+      summary: View the HKU students
       operationId: hku_students_list
       tags:
       - hku
@@ -774,6 +785,7 @@ paths:
           description: ''
   /hku/students/create/:
     post:
+      summary: Create HKU student
       operationId: hku_students_create_create
       tags:
       - hku
@@ -1138,6 +1150,7 @@ paths:
           description: ''
   /hkust/cedars_specialists/:
     get:
+      summary: View all the cedar specialists
       operationId: hkust_cedars_specialists_list
       tags:
       - hkust
@@ -1156,6 +1169,7 @@ paths:
           description: ''
   /hkust/cedars_specialists/create/:
     post:
+      summary: Enter email address to receive notifications
       operationId: hkust_cedars_specialists_create_create
       tags:
       - hkust
@@ -1184,6 +1198,7 @@ paths:
           description: ''
   /hkust/contracts/:
     get:
+      summary: View HKUST contracts
       operationId: hkust_contracts_list
       tags:
       - hkust
@@ -1292,6 +1307,7 @@ paths:
           description: ''
   /hkust/students/:
     get:
+      summary: View HKUST students
       operationId: hkust_students_list
       tags:
       - hkust
@@ -1310,6 +1326,7 @@ paths:
           description: ''
   /hkust/students/create/:
     post:
+      summary: Create HKUST student
       operationId: hkust_students_create_create
       tags:
       - hkust
